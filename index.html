@@ -2,242 +2,224 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-  <title>🇸🇦 نظام إدارة جودة المنشآت الصحية | سباهي FMS.35 & FMS.36</title>
-  <!-- Fonts & Icons -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
+  <title>🇸🇦 نظام سباهي | إدارة جودة المنشآت الصحية FMS.35 & FMS.36</title>
+  <!-- الخطوط والأيقونات -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- Tailwind -->
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Libraries: SheetJS & html2pdf -->
+  <!-- مكتبات التصدير -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     * { font-family: 'Cairo', 'Inter', sans-serif; }
     body { background: #F3F4F6; }
-    .card { background: white; border-radius: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-    .tab-active { background: #1E3A8A; color: white !important; }
-    .compliance-badge { background: #10B981; color: white; padding: 0.2rem 0.8rem; border-radius: 2rem; font-weight: 600; }
-    .noncompliance-badge { background: #EF4444; color: white; padding: 0.2rem 0.8rem; border-radius: 2rem; font-weight: 600; }
-    .glass-alert { background: rgba(239, 68, 68, 0.08); border-right: 6px solid #EF4444; }
-    .btn-primary { background: #1E3A8A; color: white; padding: 0.6rem 1.2rem; border-radius: 0.75rem; font-weight: 600; transition: all 0.2s; }
+    .card { background: white; border-radius: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); padding: 1.5rem; }
+    .tab-active { background: #1E3A8A; color: white !important; border-radius: 0.75rem 0.75rem 0 0; }
+    .badge-compliant { background: #10B981; color: white; padding: 0.2rem 0.8rem; border-radius: 2rem; font-weight: 600; }
+    .badge-noncompliant { background: #EF4444; color: white; padding: 0.2rem 0.8rem; border-radius: 2rem; }
+    .alert-panel { background: #FEF2F2; border-right: 6px solid #EF4444; padding: 1.5rem; border-radius: 1rem; }
+    .btn-primary { background: #1E3A8A; color: white; padding: 0.6rem 1.2rem; border-radius: 0.75rem; font-weight: 600; transition: 0.2s; }
     .btn-primary:hover { background: #1e4a9e; }
     .btn-outline { border: 1px solid #d1d5db; background: white; padding: 0.5rem 1rem; border-radius: 0.75rem; }
     input, select, textarea { border: 1px solid #E5E7EB; border-radius: 0.6rem; padding: 0.6rem; width: 100%; background: white; }
     label { font-weight: 500; color: #1F2937; margin-bottom: 0.3rem; display: block; }
-    .section-title { font-size: 1.3rem; font-weight: 700; color: #1E3A8A; border-bottom: 3px solid #1E3A8A; padding-bottom: 0.5rem; margin-bottom: 1.5rem; }
-    table { border-collapse: collapse; width: 100%; }
-    th { background: #F9FAFB; color: #1F2937; font-weight: 600; }
+    table { width: 100%; border-collapse: collapse; }
+    th { background: #F9FAFB; font-weight: 600; }
     td, th { border: 1px solid #E5E7EB; padding: 0.75rem; text-align: center; }
-    /* RTL support */
-    [dir="rtl"] .fa-chevron-right, [dir="rtl"] .fa-chevron-left { transform: rotate(180deg); }
+    @media print {
+      .no-print, .tab-btn, .export-buttons, button { display: none !important; }
+      body { background: white; }
+      .card { box-shadow: none; border: 1px solid #ccc; }
+    }
   </style>
 </head>
-<body class="p-4 md:p-6 font-sans" dir="rtl">
+<body class="p-4 md:p-6" dir="rtl">
 
 <div class="max-w-7xl mx-auto">
 
-  <!-- Header + Language Toggle (RTL/EN simulation) -->
-  <div class="flex flex-wrap justify-between items-center mb-6">
-    <h1 class="text-2xl md:text-3xl font-bold text-[#1E3A8A]"><i class="fas fa-hospital me-2"></i>نظام سباهي لإدارة الجودة والصيانة</h1>
-    <div class="flex gap-3">
-      <button id="langToggle" class="btn-outline flex items-center gap-2"><i class="fas fa-language"></i> English / العربية</button>
+  <!-- رأس الصفحة مع اسم المستشفى قابل للتعديل -->
+  <div class="flex flex-wrap justify-between items-center mb-5">
+    <div class="flex items-center gap-3">
+      <i class="fas fa-hospital text-3xl text-[#1E3A8A]"></i>
+      <h1 class="text-2xl md:text-3xl font-bold text-[#1E3A8A]">
+        <span contenteditable="true" id="hospitalNameDisplay">مستشفى الملك فهد التخصصي</span>
+        <i class="fas fa-pencil-alt text-sm text-gray-400 ms-2 no-print"></i>
+      </h1>
+    </div>
+    <div class="flex gap-2">
+      <button id="langToggle" class="btn-outline"><i class="fas fa-language"></i> English</button>
       <button onclick="window.print()" class="btn-outline"><i class="fas fa-print"></i> طباعة الصفحة</button>
     </div>
   </div>
 
-  <!-- Notification panel (hidden by default) -->
-  <div id="actionNotification" class="glass-alert p-5 mb-6 rounded-xl hidden">
+  <!-- لوحة التنبيه (تظهر عند المخالفة) -->
+  <div id="actionNotification" class="alert-panel mb-6 hidden">
     <div class="flex items-start gap-4">
-      <i class="fas fa-exclamation-triangle text-3xl text-[#EF4444]"></i>
+      <i class="fas fa-exclamation-triangle text-4xl text-[#EF4444]"></i>
       <div class="flex-1">
-        <h3 class="text-xl font-bold text-[#EF4444]">🚨 تنبيه: مخالفة مسجلة - Non-Compliance Detected</h3>
-        <div class="grid md:grid-cols-2 gap-3 mt-3">
-          <div><span class="font-semibold">📍 الموقع:</span> <span id="notifLocation">—</span></div>
-          <div><span class="font-semibold">📊 القيمة المسجلة:</span> <span id="notifValue">—</span></div>
-          <div><span class="font-semibold">🎯 النطاق المسموح:</span> <span id="notifRange">—</span></div>
+        <h3 class="text-xl font-bold text-[#EF4444]">🚨 تنبيه — عدم امتثال مكتشف</h3>
+        <div class="grid md:grid-cols-3 gap-3 mt-3">
+          <div><span class="font-bold">📍 الموقع:</span> <span id="notifLoc">—</span></div>
+          <div><span class="font-bold">📊 القيمة:</span> <span id="notifVal">—</span></div>
+          <div><span class="font-bold">🎯 النطاق:</span> <span id="notifRange">—</span></div>
         </div>
-        <div class="mt-4 bg-white p-3 rounded-lg">
+        <div class="bg-white p-4 rounded-lg mt-3">
           <p class="font-bold mb-2">⚠️ الإجراءات المطلوبة:</p>
           <div class="grid grid-cols-2 gap-2">
-            <label class="flex items-center gap-2"><input type="checkbox" class="w-5 h-5"> فتح أمر شغل (U&M)</label>
-            <label class="flex items-center gap-2"><input type="checkbox" class="w-5 h-5"> إخطار مكافحة العدوى (IPC)</label>
-            <label class="flex items-center gap-2"><input type="checkbox" class="w-5 h-5"> إعادة الفحص خلال 24 ساعة</label>
-            <label class="flex items-center gap-2"><input type="checkbox" class="w-5 h-5"> تسجيل في نظام الجودة</label>
+            <label><input type="checkbox" class="w-5 h-5"> فتح أمر شغل (U&M)</label>
+            <label><input type="checkbox" class="w-5 h-5"> إخطار IPC</label>
+            <label><input type="checkbox" class="w-5 h-5"> إعادة فحص خلال 24 ساعة</label>
+            <label><input type="checkbox" class="w-5 h-5"> تسجيل في نظام الجودة</label>
           </div>
         </div>
         <div class="flex gap-3 mt-4">
-          <button class="btn-primary"><i class="fas fa-check-circle"></i> تأكيد فتح أمر الشغل</button>
+          <button class="btn-primary"><i class="fas fa-check"></i> تأكيد الإجراءات</button>
           <button class="btn-outline" onclick="document.getElementById('actionNotification').classList.add('hidden')">إغلاق</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- KPIs & progress (dynamic updates via JS) -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-    <div class="card p-5 text-center">
-      <div class="text-gray-500">نسبة الامتثال</div>
-      <div class="text-4xl font-bold text-[#10B981]" id="compliancePercent">100%</div>
-      <div class="w-full bg-gray-200 h-3 rounded-full mt-2"><div id="complianceBar" class="bg-[#10B981] h-3 rounded-full" style="width:100%"></div></div>
-    </div>
-    <div class="card p-5 text-center">
-      <div class="text-gray-500"><i class="fas fa-clipboard-list"></i> السجلات الكلية</div>
-      <div class="text-4xl font-bold" id="totalRecords">0</div>
-    </div>
-    <div class="card p-5 text-center">
-      <div class="text-gray-500"><i class="fas fa-times-circle text-[#EF4444]"></i> السجلات المخالفة</div>
-      <div class="text-4xl font-bold text-[#EF4444]" id="nonCompliantRecords">0</div>
-    </div>
+  <!-- مؤشرات الأداء KPI -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    <div class="card !p-4 text-center"><span class="text-gray-500">نسبة الامتثال الكلية</span><div class="text-3xl font-bold text-[#10B981]" id="overallCompliance">100%</div><div class="w-full bg-gray-200 h-2 rounded-full mt-1"><div id="complianceBar" class="bg-[#10B981] h-2 rounded-full" style="width:100%"></div></div></div>
+    <div class="card !p-4 text-center"><span class="text-gray-500">إجمالي السجلات</span><div class="text-3xl font-bold" id="totalRecords">0</div></div>
+    <div class="card !p-4 text-center"><span class="text-gray-500">سجلات متوافقة</span><div class="text-3xl font-bold text-[#10B981]" id="compliantCount">0</div></div>
+    <div class="card !p-4 text-center"><span class="text-gray-500">مخالفات</span><div class="text-3xl font-bold text-[#EF4444]" id="nonCompliantCount">0</div></div>
   </div>
 
-  <!-- Tabs -->
+  <!-- التبويبات الرئيسية -->
   <div class="flex flex-wrap border-b border-gray-200 mb-5 gap-1">
-    <button class="tab-btn tab-active px-6 py-3 rounded-t-xl font-semibold" data-tab="fms35"><i class="fas fa-wind me-2"></i> FMS.35 – تدفق الهواء</button>
-    <button class="tab-btn px-6 py-3 rounded-t-xl font-semibold text-gray-600" data-tab="fms36"><i class="fas fa-temperature-high me-2"></i> FMS.36 – الحرارة والرطوبة</button>
-    <button class="tab-btn px-6 py-3 rounded-t-xl font-semibold text-gray-600" data-tab="reference"><i class="fas fa-calculator me-2"></i> المراجع والحسابات</button>
+    <button class="tab-btn tab-active px-6 py-3 font-semibold" data-tab="fms35"><i class="fas fa-wind me-2"></i> FMS.35 تدفق الهواء</button>
+    <button class="tab-btn px-6 py-3 font-semibold text-gray-600" data-tab="fms36"><i class="fas fa-temperature-high me-2"></i> FMS.36 الحرارة والرطوبة</button>
+    <button class="tab-btn px-6 py-3 font-semibold text-gray-600" data-tab="reference"><i class="fas fa-calculator me-2"></i> المراجع والحسابات</button>
   </div>
 
-  <!-- ################### TAB FMS.35 ################### -->
+  <!-- ##################### تبويب FMS.35 ##################### -->
   <div id="tab-fms35" class="tab-content">
-    <!-- Sub-tabs for locations + Isolation room special form -->
-    <div class="flex flex-wrap gap-2 mb-4">
-      <select id="fms35LocationSelect" class="w-full md:w-64 border p-3 rounded-xl">
-        <option value="or">غرف العمليات (Operating Room)</option>
-        <option value="ld">غرف الولادة (Labor & Delivery)</option>
-        <option value="iso" selected>غرف العزل (Isolation Rooms) – نموذج متكامل</option>
-        <option value="ccu">وحدات الرعاية الحرجة (Critical Care)</option>
-        <option value="clean">التخزين النظيف (Clean Utility)</option>
-        <option value="dirty">التخزين المتسخ (Dirty Utility)</option>
-        <option value="jan">غرفة عامل النظافة (Janitorial)</option>
-        <option value="lab">المختبر (Laboratory)</option>
-        <option value="triage">الفرز واستقبال الحوادث (Triage)</option>
-        <option value="sterile">التعقيم والإمداد المركزي</option>
+    <!-- قائمة منسدلة للمواقع -->
+    <div class="mb-4"><label class="inline-block ms-2">اختر الموقع:</label>
+      <select id="fms35LocationSelect" class="w-full md:w-1/3">
+        <option value="or">غرف العمليات (≥20 ACH, +2.5~+6 Pa)</option>
+        <option value="ld">غرف الولادة (≥15, +2.5~+6)</option>
+        <option value="iso">غرف العزل (≥12, -2.5~-16) – نموذج متكامل</option>
+        <option value="ccu">الرعاية الحرجة (≥12, +2.5~+6)</option>
+        <option value="clean">التخزين النظيف (≥12, +2.5~+6)</option>
+        <option value="dirty">التخزين المتسخ (≥12, -2.5~-16)</option>
+        <option value="jan">غرفة عامل النظافة (≥10, -2.5~-16)</option>
+        <option value="lab">المختبر (≥12, -2.5~-16)</option>
+        <option value="triage">الفرز والحوادث (≥12, +2.5~+6)</option>
+        <option value="sterile">التعقيم المركزي (≥15, +2.5~+6)</option>
       </select>
     </div>
 
-    <!-- DYNAMIC FORMS: simplified vs isolation -->
-    <div id="fms35GenericForm" class="card p-6 mb-8 hidden">
-      <!-- filled by js -->
+    <!-- النموذج العام (يظهر لجميع المواقع ما عدا العزل) -->
+    <div id="fms35GenericForm" class="card mb-6 hidden">
+      <!-- يتم ملؤه ديناميكياً عبر JS -->
     </div>
-    <div id="fms35IsolationForm" class="card p-6 mb-8">
-      <!-- Full isolation form as per spec -->
-      <div class="flex justify-between items-center mb-4"><h3 class="text-2xl font-bold">🏥 غرف العزل ذات الضغط السلبي - سجل المراقبة الأسبوعي</h3><span class="text-sm bg-blue-100 px-3 py-1 rounded">ASHRAE 170</span></div>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div><label>اسم المستشفى</label><input type="text" id="isoHospital" placeholder="مستشفى الملك فهد" class="w-full"></div>
-        <div><label>عدد أسرة المستشفى</label><input type="number" id="isoBeds" value="300"></div>
-        <div><label>عدد غرف العزل</label><input type="number" id="isoTotalRooms" value="8"></div>
-        <div><label>الغرف العاملة</label><input type="number" id="isoWorking" value="7"></div>
-        <div><label>غير العاملة</label><input type="number" id="isoNotWorking" value="1"></div>
-        <div><label>التاريخ</label><input type="date" id="isoDate"></div>
-        <div><label>رقم الأسبوع</label><input type="number" id="isoWeek" value="14"></div>
+    <!-- نموذج غرف العزل المتكامل -->
+    <div id="fms35IsolationForm" class="card mb-6">
+      <div class="flex justify-between"><h3 class="text-2xl font-bold mb-2">🏥 غرف العزل ذات الضغط السلبي – سجل أسبوعي</h3><span class="bg-blue-100 px-3 py-1 rounded">ASHRAE 170</span></div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div><label>عدد أسرة المستشفى</label><input type="number" id="isoBeds" value="350"></div><div><label>عدد غرف العزل</label><input type="number" id="isoTotalRooms" value="10"></div>
+        <div><label>غرف عاملة</label><input type="number" id="isoWorking" value="9"></div><div><label>غير عاملة</label><input type="number" id="isoNotWorking" value="1"></div>
+        <div><label>التاريخ</label><input type="date" id="isoDate"></div><div><label>رقم الأسبوع</label><input type="number" id="isoWeek" value="15"></div>
       </div>
-      <hr class="my-5">
-      <h4 class="font-bold text-lg mb-3">📊 جدول غرف العزل</h4>
-      <div class="overflow-x-auto">
-        <table id="isoRoomsTable">
-          <thead><tr><th>رقم الغرفة</th><th>القسم</th><th>الطابق</th><th>°C</th><th>رطوبة %</th><th>ACH</th><th>الضغط Pa</th></tr></thead>
-          <tbody id="isoRoomsBody"></tbody>
-        </table>
+      <hr class="my-4"><h4 class="font-bold text-lg">📊 جدول الغرف</h4>
+      <div class="overflow-auto"><table id="isoRoomsTable"><thead><tr><th>رقم الغرفة</th><th>القسم</th><th>طابق</th><th>°C</th><th>رطوبة%</th><th>ACH</th><th>ضغط Pa</th></tr></thead><tbody id="isoRoomsBody"></tbody></table></div>
+      <div class="flex gap-3 mt-3"><button id="addIsoRoomRow" class="btn-outline"><i class="fas fa-plus"></i> إضافة غرفة</button><button id="removeIsoRoomRow" class="btn-outline"><i class="fas fa-trash"></i> حذف آخر</button></div>
+      <div class="grid md:grid-cols-2 gap-4 mt-4">
+        <div><label>تاريخ تغيير HEPA</label><input type="date" id="isoHepa"></div><div><label>حالة التكييف</label><select id="isoAcStatus"><option>يعمل</option><option>لا يعمل</option></select></div>
+        <div class="md:col-span-2"><label>ملاحظات</label><textarea id="isoNotes" rows="2"></textarea></div>
       </div>
-      <div class="flex gap-3 mt-4"><button id="addIsoRoomRow" class="btn-outline"><i class="fas fa-plus"></i> إضافة غرفة</button><button id="removeIsoRoomRow" class="btn-outline"><i class="fas fa-trash"></i> حذف آخر</button></div>
-      <div class="grid md:grid-cols-2 gap-4 mt-5">
-        <div><label>تاريخ آخر تغيير لفلتر HEPA</label><input type="date" id="isoHepa"></div>
-        <div><label>حالة التكييف</label><select id="isoAcStatus"><option>يعمل</option><option>لا يعمل</option></select></div>
-        <div class="md:col-span-2"><label>ملاحظات إضافية</label><textarea rows="2" id="isoNotes"></textarea></div>
-      </div>
-      <div class="mt-6"><h4 class="font-bold">⚠️ قسم الأعطال والإجراءات</h4>
-        <table class="mt-2"><thead><tr><th>رقم الغرفة</th><th>القسم</th><th>وصف المشكلة</th><th>الإجراءات</th></tr></thead><tbody id="isoIssuesBody"></tbody></table>
-        <button id="addIsoIssue" class="btn-outline mt-3"><i class="fas fa-exclamation-triangle"></i> إضافة عطل</button>
-      </div>
-      <div class="grid md:grid-cols-2 gap-4 mt-6">
-        <div><label>المهندس المسؤول</label><input type="text" id="isoEng" placeholder="م. أحمد"></div>
-        <div><label>مكافحة العدوى</label><input type="text" id="isoIpc" placeholder="د. سارة"></div>
-      </div>
-      <div class="mt-4 flex items-center gap-4"><span class="font-bold">حالة الامتثال الكلية:</span><span id="isoOverallStatus" class="compliance-badge">✅ متوافق</span></div>
-      <div class="flex flex-wrap gap-3 mt-6">
-        <button id="saveIsoToMainTable" class="btn-primary"><i class="fas fa-save"></i> إضافة السجل إلى الجدول الرئيسي</button>
-        <button onclick="window.print()" class="btn-outline"><i class="fas fa-print"></i> طباعة</button>
+      <div class="mt-4"><h4 class="font-bold">⚠️ الأعطال</h4><table><tbody id="isoIssuesBody"></tbody></table><button id="addIsoIssue" class="btn-outline mt-2"><i class="fas fa-exclamation-triangle"></i> إضافة عطل</button></div>
+      <div class="grid md:grid-cols-2 gap-4 mt-4"><div><label>توقيع المهندس</label><input id="isoEng"></div><div><label>توقيع مكافحة العدوى</label><input id="isoIpc"></div></div>
+      <div class="mt-4"><span class="font-bold">حالة الامتثال:</span><span id="isoOverallStatus" class="badge-compliant ms-2">✅ متوافق</span></div>
+      <div class="flex flex-wrap gap-3 mt-5">
+        <button id="saveIsoToMainTable" class="btn-primary"><i class="fas fa-save"></i> إضافة السجل للجدول</button>
+        <button id="printIsoForm" class="btn-outline"><i class="fas fa-print"></i> طباعة النموذج</button>
         <button id="exportIsoPdf" class="btn-outline"><i class="fas fa-file-pdf"></i> PDF</button>
       </div>
     </div>
 
-    <!-- Main records table FMS35 -->
-    <div class="card p-5">
-      <div class="flex justify-between"><h3 class="text-xl font-bold mb-3">📋 سجلات FMS.35</h3><div><button id="exportFms35Csv" class="btn-outline me-2"><i class="fas fa-file-csv"></i> CSV</button><button id="exportFms35Excel" class="btn-outline"><i class="fas fa-file-excel"></i> Excel</button></div></div>
-      <div class="overflow-auto"><table id="fms35MainTable"><thead><tr><th>التاريخ</th><th>الموقع</th><th>ACH</th><th>الضغط Pa</th><th>حالة</th></tr></thead><tbody></tbody></table></div>
+    <!-- جدول السجلات FMS.35 -->
+    <div class="card"><div class="flex justify-between"><h3 class="text-xl font-bold">📋 سجلات FMS.35</h3><div><button id="exportFms35Csv" class="btn-outline me-2"><i class="fas fa-file-csv"></i> CSV</button><button id="exportFms35Excel" class="btn-outline me-2"><i class="fas fa-file-excel"></i> Excel</button><button id="printFms35Table" class="btn-outline"><i class="fas fa-print"></i> طباعة الجدول</button></div></div>
+      <div class="overflow-auto"><table id="fms35MainTable"><thead><tr><th>التاريخ</th><th>الموقع</th><th>ACH</th><th>ضغط Pa</th><th>حالة</th><th>توقيع</th></tr></thead><tbody></tbody></table></div>
     </div>
   </div>
 
-  <!-- ################### TAB FMS.36 ################### -->
+  <!-- ##################### تبويب FMS.36 ##################### -->
   <div id="tab-fms36" class="tab-content hidden">
     <div class="grid md:grid-cols-2 gap-6">
-      <div class="card p-6"><h3 class="font-bold text-xl mb-4">📍 اختيار الموقع</h3><select id="fms36Location" class="mb-4"><option value="or">العمليات والإفاقة</option><option value="nursery">الحضانة</option><option value="ccu">الرعاية الحرجة</option><option value="sterile">تخزين المواد المعقمة</option><option value="inpatient">غرف المرضى</option></select>
-        <div><label>📅 التاريخ</label><input type="date" id="fms36Date"></div><div><label>👤 المسؤول</label><input id="fms36Inspector"></div>
-        <div><label>🌡️ درجة الحرارة (°C)</label><input type="number" step="0.1" id="fms36Temp"><p class="text-sm text-gray-500">النطاق 20-24</p></div>
-        <div><label>💧 الرطوبة (%)</label><input type="number" step="0.1" id="fms36Hum"><p class="text-sm">30-60%</p></div>
-        <div class="mt-4"><button id="addFms36Record" class="btn-primary">إضافة إلى الجدول</button></div>
+      <div class="card"><h3 class="font-bold text-xl mb-3">🌡️ نموذج فحص الحرارة والرطوبة</h3>
+        <select id="fms36Location" class="mb-4"><option value="or">العمليات والإفاقة</option><option value="nursery">الحضانة</option><option value="ccu">الرعاية الحرجة</option><option value="sterile">تخزين المواد المعقمة</option><option value="inpatient">غرف المرضى</option></select>
+        <div><label>التاريخ</label><input type="date" id="fms36Date"></div><div><label>الوقت</label><input type="time" id="fms36Time"></div><div><label>المسؤول</label><input id="fms36Inspector"></div>
+        <div><label>🌡️ درجة الحرارة (°C)</label><input type="number" step="0.1" id="fms36Temp"><span class="text-sm text-gray-500">20-24</span></div>
+        <div><label>💧 الرطوبة (%)</label><input type="number" step="0.1" id="fms36Hum"><span class="text-sm">30-60</span></div>
+        <div class="mt-4"><button id="addFms36Record" class="btn-primary">إضافة السجل</button></div>
       </div>
-      <div class="card p-5"><h3 class="font-bold">سجلات FMS.36</h3><table id="fms36MainTable"><thead><tr><th>تاريخ</th><th>موقع</th><th>حرارة</th><th>رطوبة</th><th>حالة</th></tr></thead><tbody></tbody></table>
-        <div class="mt-4"><button id="exportFms36Csv" class="btn-outline">CSV</button></div>
+      <div class="card"><h3 class="font-bold text-xl">📋 سجلات FMS.36</h3><div class="flex gap-2 mb-2"><button id="exportFms36Csv" class="btn-outline">CSV</button><button id="printFms36Table" class="btn-outline">طباعة</button></div>
+        <table id="fms36MainTable"><thead><tr><th>تاريخ</th><th>موقع</th><th>حرارة</th><th>رطوبة</th><th>حالة</th></tr></thead><tbody></tbody></table>
       </div>
     </div>
   </div>
 
-  <!-- ################### TAB REFERENCE ################### -->
+  <!-- ##################### تبويب المراجع والحسابات ##################### -->
   <div id="tab-reference" class="tab-content hidden">
     <div class="grid lg:grid-cols-2 gap-6">
-      <div class="card p-6"><h3 class="section-title"><i class="fas fa-calculator"></i> الحاسبة الهندسية</h3>
-        <div class="space-y-6"><div><label>ACH = Q / V</label><input type="number" id="calcQ" placeholder="Q (m³/h)"><input type="number" id="calcV" placeholder="V (m³)" class="mt-2"><button id="calcAchBtn" class="btn-primary mt-2">احسب ACH</button><span id="achResult" class="font-bold ms-3"></span></div>
-        <div><label>ACH من CFM والقدم³</label><input id="calcCfm" placeholder="CFM"><div class="grid grid-cols-3 gap-2"><input id="calcLen" placeholder="طول (م)"><input id="calcWid" placeholder="عرض"><input id="calcHei" placeholder="ارتفاع"></div><button id="calcCfmAch" class="btn-primary mt-2">احسب</button><span id="cfmAchResult"></span></div>
-        <div><label>m²→ft² / m³→ft³</label><input id="unitInput" placeholder="القيمة"><button id="convertUnits" class="btn-outline">تحويل</button><span id="unitResult"></span></div>
+      <div class="card"><h3 class="section-title text-xl"><i class="fas fa-calculator"></i> الحاسبة الهندسية</h3>
+        <div class="space-y-5">
+          <div><label>ACH = Q / V</label><input type="number" id="calcQ" placeholder="Q (m³/h)"><input type="number" id="calcV" placeholder="V (m³)" class="mt-2"><button id="calcAchBtn" class="btn-primary mt-2">احسب</button><span id="achResult" class="font-bold ms-3"></span></div>
+          <div><label>ACH من CFM والأبعاد (م)</label><input id="calcCfm" placeholder="CFM"><div class="grid grid-cols-3 gap-2"><input id="calcLen" placeholder="طول (م)"><input id="calcWid" placeholder="عرض"><input id="calcHei" placeholder="ارتفاع"></div><button id="calcCfmAch" class="btn-primary mt-2">احسب ACH</button><span id="cfmAchResult"></span><p class="text-sm">الحجم (م³): <span id="volM3">-</span> | (ft³): <span id="volFt">-</span></p></div>
+          <div><label>Q من السرعة</label><input id="areaA" placeholder="A (m²)"><input id="velV" placeholder="v (m/s)"><button id="calcQfromV" class="btn-primary">احسب Q</button><span id="qResult"></span></div>
+          <div><label>ΔP = 0.5×ρ×v²</label><input id="pressV" placeholder="v (m/s)"><button id="calcDeltaP" class="btn-primary">احسب ΔP</button><span id="deltaPResult"></span></div>
+          <div><label>تحويل الوحدات</label><input id="unitInput" placeholder="القيمة"><button id="convertUnits" class="btn-outline">تحويل m²→ft² / m³→ft³</button><span id="unitResult"></span></div>
         </div>
       </div>
-      <div class="card p-6">
-        <h3 class="section-title">📚 القيم المرجعية</h3>
-        <ul class="list-disc list-inside"><li>OR ACH ≥20, ضغط +2.5~+6</li><li>Isolation ACH ≥12, ضغط -2.5~-16</li><li>درجة الحرارة 20-24°C | رطوبة 30-60%</li></ul>
-        <h4 class="font-bold mt-4">بروتوكول المخالفة</h4><p>فتح أمر شغل U&M, إخطار IPC, إعادة فحص 24ساعة</p>
+      <div class="card">
+        <h3 class="section-title">📚 القيم المرجعية ASHRAE 170</h3>
+        <ul class="list-disc list-inside"><li>غرف العمليات: ACH≥20, +2.5~+6 Pa</li><li>العزل: ACH≥12, -2.5~-16 Pa</li><li>الحرارة: 20-24°C | رطوبة 30-60%</li></ul>
+        <h4 class="font-bold mt-4">📋 بروتوكول المخالفة</h4><p>فتح أمر شغل U&M, إخطار IPC, إعادة فحص 24ساعة, تسجيل في الجودة.</p>
+        <div class="mt-4 p-3 bg-gray-50 rounded"><i class="fas fa-info-circle"></i> معادلة ACH = (CFM × 60) / V(ft³) ، V(ft³)=V(m³)×35.3147</div>
       </div>
-    </div>
-    <div class="card p-5 mt-6">
-      <h3>📐 المعادلات</h3>
-      <p>ACH = Q / V ,  ACH = (CFM × 60) / V(ft³) , Q = A × v × 3600</p>
     </div>
   </div>
 </div>
 
 <script>
   (function(){
-    // State & localStorage
+    // البيانات والتخزين
     let fms35Records = JSON.parse(localStorage.getItem('fms35Records')) || [];
     let fms36Records = JSON.parse(localStorage.getItem('fms36Records')) || [];
     
-    // Helper: update KPIs
+    // تحديث مؤشرات الأداء
     function updateKPIs(){
       const total = fms35Records.length + fms36Records.length;
-      const nonCompliant = [...fms35Records, ...fms36Records].filter(r=> r.status==='غير متوافق').length;
-      const percent = total ? Math.round(((total-nonCompliant)/total)*100) : 100;
-      document.getElementById('compliancePercent').innerText = percent+'%';
+      const compliant = [...fms35Records, ...fms36Records].filter(r=>r.status==='متوافق').length;
+      const nonCompliant = total - compliant;
+      const percent = total ? Math.round((compliant/total)*100) : 100;
+      document.getElementById('overallCompliance').innerText = percent+'%';
       document.getElementById('complianceBar').style.width = percent+'%';
       document.getElementById('totalRecords').innerText = total;
-      document.getElementById('nonCompliantRecords').innerText = nonCompliant;
+      document.getElementById('compliantCount').innerText = compliant;
+      document.getElementById('nonCompliantCount').innerText = nonCompliant;
     }
 
-    // Render FMS35 main table
     function renderFms35Table(){
       const tbody = document.querySelector('#fms35MainTable tbody');
       tbody.innerHTML = '';
       fms35Records.forEach((r,i)=>{
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${r.date||''}</td><td>${r.location||''}</td><td>${r.ach||''}</td><td>${r.pressure||''}</td><td>${r.status==='متوافق'?'✅':'❌'}</td>`;
+        tr.innerHTML = `<td>${r.date||''}</td><td>${r.location||''}</td><td>${r.ach||'-'}</td><td>${r.pressure||'-'}</td><td>${r.status==='متوافق'?'✅':'❌'}</td><td>${r.signature||''}</td>`;
         tbody.appendChild(tr);
       });
       localStorage.setItem('fms35Records', JSON.stringify(fms35Records));
       updateKPIs();
     }
-
     function renderFms36Table(){
       const tbody = document.querySelector('#fms36MainTable tbody');
       tbody.innerHTML = '';
@@ -250,23 +232,14 @@
       updateKPIs();
     }
 
-    // Show notification
-    function showNotification(loc, value, range){
-      document.getElementById('notifLocation').innerText = loc;
-      document.getElementById('notifValue').innerText = value;
+    function showNotification(loc,val,range){
+      document.getElementById('notifLoc').innerText = loc;
+      document.getElementById('notifVal').innerText = val;
       document.getElementById('notifRange').innerText = range;
       document.getElementById('actionNotification').classList.remove('hidden');
     }
 
-    // FMS35 generic form logic
-    const locConfig = {
-      or:{ name:'غرف العمليات', achMin:20, press:[2.5,6], flow:'Positive' },
-      ld:{ achMin:15, press:[2.5,6] }, ccu:{ achMin:12, press:[2.5,6] }, clean:{ achMin:12, press:[2.5,6] },
-      dirty:{ achMin:12, press:[-16,-2.5] }, jan:{ achMin:10, press:[-16,-2.5] }, lab:{ achMin:12, press:[-16,-2.5] },
-      triage:{ achMin:12, press:[2.5,6] }, sterile:{ achMin:15, press:[2.5,6] }
-    };
-
-    // tab switching
+    // التبويبات
     document.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click',function(){
       document.querySelectorAll('.tab-btn').forEach(bt=>bt.classList.remove('tab-active','bg-[#1E3A8A]','text-white'));
       this.classList.add('tab-active','bg-[#1E3A8A]','text-white');
@@ -274,118 +247,99 @@
       document.getElementById('tab-'+this.dataset.tab).classList.remove('hidden');
     }));
 
-    // ISO table rows
-    function populateIsoTable(){
-      const body = document.getElementById('isoRoomsBody');
-      if(body.children.length===0) addIsoRow();
-    }
-    function addIsoRow(){
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td><input value="غرفة ${document.querySelectorAll('#isoRoomsBody tr').length+1}" class="w-20"></td>
-        <td><select class="w-24"><option>ER</option><option>ICU</option><option>Pedai</option></select></td><td><input value="2" class="w-16"></td>
-        <td><input type="number" value="22" step="0.1" class="w-20"></td><td><input value="45" class="w-20"></td><td><input value="14" class="w-20"></td><td><input value="-4.5" class="w-20"></td>`;
-      document.getElementById('isoRoomsBody').appendChild(tr);
-    }
-    document.getElementById('addIsoRoomRow').addEventListener('click',addIsoRow);
-    document.getElementById('removeIsoRoomRow').addEventListener('click',()=>{
-      const b=document.getElementById('isoRoomsBody'); if(b.lastChild) b.removeChild(b.lastChild);
-    });
-    // add issue row
-    document.getElementById('addIsoIssue').addEventListener('click',()=>{
-      const tr=document.createElement('tr');
-      tr.innerHTML=`<td><input placeholder="رقم"></td><td><select><option>ER</option></select></td><td><textarea rows="1"></textarea></td><td><input placeholder="U&M / IPC"></td>`;
-      document.getElementById('isoIssuesBody').appendChild(tr);
-    });
+    // تكوين مواقع FMS35
+    const locConfig = {
+      or:{ name:'غرف العمليات', achMin:20, press:[2.5,6] }, ld:{ achMin:15, press:[2.5,6] },
+      iso:{ achMin:12, press:[-16,-2.5] }, ccu:{ achMin:12, press:[2.5,6] }, clean:{ achMin:12, press:[2.5,6] },
+      dirty:{ achMin:12, press:[-16,-2.5] }, jan:{ achMin:10, press:[-16,-2.5] }, lab:{ achMin:12, press:[-16,-2.5] },
+      triage:{ achMin:12, press:[2.5,6] }, sterile:{ achMin:15, press:[2.5,6] }
+    };
 
-    // save iso to main
-    document.getElementById('saveIsoToMainTable').addEventListener('click',()=>{
-      const rows = document.querySelectorAll('#isoRoomsBody tr');
-      let compliant = true;
-      rows.forEach(r=>{
-        const ach = parseFloat(r.cells[5].querySelector('input').value);
-        const press = parseFloat(r.cells[6].querySelector('input').value);
-        if(ach<12 || press>-2.5 || press<-16) compliant = false;
-      });
-      fms35Records.push({ date: document.getElementById('isoDate').value, location:'غرف العزل (نموذج اسبوعي)', ach:'-', pressure:'-', status: compliant?'متوافق':'غير متوافق' });
-      renderFms35Table();
-      if(!compliant) showNotification('غرف العزل','ACH/ضغط خارج النطاق','ACH≥12, ضغط -2.5~-16');
-    });
-
-    // Add generic FMS35
+    // تبديل نموذج FMS35
     document.getElementById('fms35LocationSelect').addEventListener('change', function(e){
       const val = this.value;
-      if(val==='iso'){ document.getElementById('fms35IsolationForm').classList.remove('hidden'); document.getElementById('fms35GenericForm').classList.add('hidden'); }
-      else {
+      if(val==='iso'){
+        document.getElementById('fms35IsolationForm').classList.remove('hidden');
+        document.getElementById('fms35GenericForm').classList.add('hidden');
+      } else {
         document.getElementById('fms35IsolationForm').classList.add('hidden');
         const gen = document.getElementById('fms35GenericForm');
         gen.classList.remove('hidden');
-        const cfg = locConfig[val]||{achMin:12,press:[2.5,6]};
-        gen.innerHTML = `<h3 class="font-bold text-xl">📍 ${this.options[this.selectedIndex].text}</h3>
-        <div class="grid grid-cols-2 gap-4"><div><label>التاريخ</label><input type="date" id="genDate"></div><div><label>المسؤول</label><input id="genInsp"></div></div>
-        <div><label>الضغط (Pa)</label><input type="number" step="0.1" id="genPress"><p>النطاق ${cfg.press[0]} ~ ${cfg.press[1]}</p></div>
+        const cfg = locConfig[val];
+        gen.innerHTML = `<h3 class="font-bold text-xl">📍 ${this.options[this.selectedIndex].text.split('(')[0]}</h3>
+        <div class="grid grid-cols-2 gap-4"><div><label>التاريخ</label><input type="date" id="genDate"></div><div><label>الوقت</label><input type="time" id="genTime"></div><div><label>المسؤول</label><input id="genInsp"></div></div>
+        <div><label>الضغط التفاضلي (Pa)</label><input type="number" step="0.1" id="genPress"><p>النطاق ${cfg.press[0]} ~ ${cfg.press[1]}</p></div>
         <div><label>ACH</label><input type="number" step="0.1" id="genAch"></div>
+        <div class="grid grid-cols-3 gap-2"><label>CFM</label><input id="genCfm"><label>طول(م)</label><input id="genL"><label>عرض</label><input id="genW"><label>ارتفاع</label><input id="genH"><button id="calcAchFromCfm" class="btn-outline">حساب ACH من CFM</button></div>
+        <div><label>توقيع المهندس</label><input id="genSign"></div>
         <button id="saveGenRecord" class="btn-primary mt-4">حفظ السجل</button>`;
         document.getElementById('saveGenRecord').addEventListener('click',()=>{
           const press = parseFloat(document.getElementById('genPress').value);
           const ach = parseFloat(document.getElementById('genAch').value);
           const status = (ach>=cfg.achMin && press>=cfg.press[0] && press<=cfg.press[1]) ?'متوافق':'غير متوافق';
-          fms35Records.push({ date: document.getElementById('genDate').value, location: this.options[this.selectedIndex].text, ach, pressure: press, status });
+          fms35Records.push({ date: document.getElementById('genDate').value, location: this.options[this.selectedIndex].text.split('(')[0], ach, pressure: press, status, signature: document.getElementById('genSign').value });
           renderFms35Table();
-          if(status!=='متوافق') showNotification(this.options[this.selectedIndex].text, `ACH ${ach} ضغط ${press}`, `ACH≥${cfg.achMin}`);
+          if(status!=='متوافق') showNotification(this.options[this.selectedIndex].text, `ACH ${ach} ضغط ${press}`, `ACH≥${cfg.achMin}, ضغط ${cfg.press[0]}~${cfg.press[1]}`);
+        });
+        document.getElementById('calcAchFromCfm')?.addEventListener('click',()=>{
+          const cfm=parseFloat(document.getElementById('genCfm').value), l=parseFloat(document.getElementById('genL').value), w=parseFloat(document.getElementById('genW').value), h=parseFloat(document.getElementById('genH').value);
+          const volM3=l*w*h; const volFt=volM3*35.3147; const achVal = (cfm*60)/volFt;
+          document.getElementById('genAch').value = achVal.toFixed(2);
         });
       }
     });
     document.getElementById('fms35LocationSelect').dispatchEvent(new Event('change'));
 
-    // FMS36 add
+    // إضافة صفوف غرف العزل
+    function addIsoRow(){
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td><input value="غرفة ${document.querySelectorAll('#isoRoomsBody tr').length+1}" class="w-20"></td><td><select><option>ER</option><option>ICU</option></select></td><td><input value="2"></td><td><input value="22"></td><td><input value="45"></td><td><input value="14"></td><td><input value="-4.5"></td>`;
+      document.getElementById('isoRoomsBody').appendChild(tr);
+    }
+    document.getElementById('addIsoRoomRow').addEventListener('click',addIsoRow);
+    document.getElementById('removeIsoRoomRow').addEventListener('click',()=>{ const b=document.getElementById('isoRoomsBody'); if(b.lastChild) b.removeChild(b.lastChild); });
+    document.getElementById('addIsoIssue').addEventListener('click',()=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td><input placeholder="رقم"></td><td><select><option>ER</option></select></td><td><textarea rows="1"></textarea></td><td><input placeholder="U&M/IPC"></td>`;
+      document.getElementById('isoIssuesBody').appendChild(tr);
+    });
+    // حفظ غرف العزل للجدول
+    document.getElementById('saveIsoToMainTable').addEventListener('click',()=>{
+      const rows=document.querySelectorAll('#isoRoomsBody tr'); let compliant=true;
+      rows.forEach(r=>{ const ach=parseFloat(r.cells[5].querySelector('input').value); const press=parseFloat(r.cells[6].querySelector('input').value); if(ach<12||press>-2.5||press<-16) compliant=false; });
+      fms35Records.push({ date: document.getElementById('isoDate').value, location:'غرف العزل (أسبوعي)', ach:'-', pressure:'-', status: compliant?'متوافق':'غير متوافق', signature: document.getElementById('isoEng').value });
+      renderFms35Table(); if(!compliant) showNotification('غرف العزل','ACH/ضغط خارج النطاق','ACH≥12, -2.5~-16');
+    });
+    // إضافة FMS36
     document.getElementById('addFms36Record').addEventListener('click',()=>{
-      const temp=parseFloat(document.getElementById('fms36Temp').value);
-      const hum=parseFloat(document.getElementById('fms36Hum').value);
+      const temp=parseFloat(document.getElementById('fms36Temp').value), hum=parseFloat(document.getElementById('fms36Hum').value);
       const status = (temp>=20&&temp<=24 && hum>=30&&hum<=60)?'متوافق':'غير متوافق';
       fms36Records.push({ date: document.getElementById('fms36Date').value, location: document.getElementById('fms36Location').selectedOptions[0].text, temp, hum, status });
       renderFms36Table();
-      if(status!=='متوافق') showNotification('FMS.36', `${temp}°C / ${hum}%`, '20-24°C , 30-60%');
+      if(status!=='متوافق') showNotification('FMS.36', `${temp}°C / ${hum}%`,'20-24°C,30-60%');
     });
 
-    // calculators
-    document.getElementById('calcAchBtn').addEventListener('click',()=>{
-      const q=parseFloat(document.getElementById('calcQ').value); const v=parseFloat(document.getElementById('calcV').value);
-      document.getElementById('achResult').innerText = (q/v).toFixed(2)+' ACH';
-    });
-    document.getElementById('calcCfmAch').addEventListener('click',()=>{
-      const cfm=parseFloat(document.getElementById('calcCfm').value); const l=parseFloat(document.getElementById('calcLen').value), w=parseFloat(document.getElementById('calcWid').value), h=parseFloat(document.getElementById('calcHei').value);
-      const volM3 = l*w*h; const volFt = volM3*35.3147; const ach = (cfm*60)/volFt;
-      document.getElementById('cfmAchResult').innerText = ach.toFixed(2)+' ACH';
-    });
-    document.getElementById('convertUnits').addEventListener('click',()=>{
-      const val=parseFloat(document.getElementById('unitInput').value);
-      document.getElementById('unitResult').innerText = `${val} m² = ${(val*10.7639).toFixed(2)} ft² | ${val} m³ = ${(val*35.3147).toFixed(2)} ft³`;
-    });
+    // الحاسبات
+    document.getElementById('calcAchBtn').addEventListener('click',()=>{ const q=parseFloat(document.getElementById('calcQ').value), v=parseFloat(document.getElementById('calcV').value); document.getElementById('achResult').innerText=(q/v).toFixed(2)+' ACH'; });
+    document.getElementById('calcCfmAch').addEventListener('click',()=>{ const cfm=parseFloat(document.getElementById('calcCfm').value), l=parseFloat(document.getElementById('calcLen').value), w=parseFloat(document.getElementById('calcWid').value), h=parseFloat(document.getElementById('calcHei').value); const volM3=l*w*h, volFt=volM3*35.3147; document.getElementById('volM3').innerText=volM3.toFixed(2); document.getElementById('volFt').innerText=volFt.toFixed(2); document.getElementById('cfmAchResult').innerText=((cfm*60)/volFt).toFixed(2)+' ACH'; });
+    document.getElementById('calcQfromV').addEventListener('click',()=>{ const a=parseFloat(document.getElementById('areaA').value), v=parseFloat(document.getElementById('velV').value); document.getElementById('qResult').innerText=(a*v*3600).toFixed(2)+' m³/h'; });
+    document.getElementById('calcDeltaP').addEventListener('click',()=>{ const v=parseFloat(document.getElementById('pressV').value); document.getElementById('deltaPResult').innerText=(0.5*1.2*v*v).toFixed(2)+' Pa'; });
+    document.getElementById('convertUnits').addEventListener('click',()=>{ const val=parseFloat(document.getElementById('unitInput').value); document.getElementById('unitResult').innerText=`${val} m² = ${(val*10.7639).toFixed(2)} ft² | ${val} m³ = ${(val*35.3147).toFixed(2)} ft³`; });
 
-    // exports
-    document.getElementById('exportFms35Csv').addEventListener('click',()=>{
-      let csv="التاريخ,الموقع,ACH,ضغط,حالة\n"+fms35Records.map(r=>`${r.date},${r.location},${r.ach},${r.pressure},${r.status}`).join('\n');
-      downloadBlob(csv,'fms35.csv');
-    });
-    document.getElementById('exportFms36Csv').addEventListener('click',()=>{
-      let csv="تاريخ,موقع,حرارة,رطوبة,حالة\n"+fms36Records.map(r=>`${r.date},${r.location},${r.temp},${r.hum},${r.status}`).join('\n');
-      downloadBlob(csv,'fms36.csv');
-    });
-    function downloadBlob(content, fileName){ const blob=new Blob(["\uFEFF"+content],{type:'text/csv;charset=utf-8;'}); const link=document.createElement('a'); link.href=URL.createObjectURL(blob); link.download=fileName; link.click(); }
-    // Export PDF for ISO
-    document.getElementById('exportIsoPdf').addEventListener('click',()=>{
-      const element = document.getElementById('fms35IsolationForm');
-      html2pdf().from(element).set({margin:0.5,filename:'isolation_report.pdf'}).save();
-    });
-    // Lang toggle simple simulation
-    document.getElementById('langToggle').addEventListener('click',()=>{
-      document.dir = document.dir=='rtl'?'ltr':'rtl';
-    });
+    // التصدير والطباعة
+    function downloadBlob(content, fileName){ const blob=new Blob(["\uFEFF"+content],{type:'text/plain;charset=utf-8'}); const link=document.createElement('a'); link.href=URL.createObjectURL(blob); link.download=fileName; link.click(); }
+    document.getElementById('exportFms35Csv').addEventListener('click',()=>{ let csv="التاريخ,الموقع,ACH,ضغط,حالة,توقيع\n"+fms35Records.map(r=>`${r.date},${r.location},${r.ach},${r.pressure},${r.status},${r.signature||''}`).join('\n'); downloadBlob(csv,'fms35.csv'); });
+    document.getElementById('exportFms36Csv').addEventListener('click',()=>{ let csv="تاريخ,موقع,حرارة,رطوبة,حالة\n"+fms36Records.map(r=>`${r.date},${r.location},${r.temp},${r.hum},${r.status}`).join('\n'); downloadBlob(csv,'fms36.csv'); });
+    document.getElementById('printFms35Table').addEventListener('click',()=>{ const printContent = document.getElementById('fms35MainTable').outerHTML; const win=window.open('','','width=900,height=600'); win.document.write(`<html><head><style>table{border-collapse:collapse;}td,th{border:1px solid #000;padding:8px;}</style></head><body>${printContent}</body></html>`); win.print(); });
+    document.getElementById('exportIsoPdf').addEventListener('click',()=>{ html2pdf().from(document.getElementById('fms35IsolationForm')).set({margin:0.5,filename:'isolation.pdf'}).save(); });
+    document.getElementById('printIsoForm').addEventListener('click',()=>{ const content=document.getElementById('fms35IsolationForm').cloneNode(true); const win=window.open(''); win.document.write(content.outerHTML); win.print(); });
 
-    // init
-    populateIsoTable(); addIsoRow();
-    renderFms35Table(); renderFms36Table();
-    updateKPIs();
+    // لغة بسيطة
+    document.getElementById('langToggle').addEventListener('click',()=>{ document.dir = document.dir=='rtl'?'ltr':'rtl'; });
+
+    // تحميل أولي
+    addIsoRow(); addIsoRow();
+    renderFms35Table(); renderFms36Table(); updateKPIs();
   })();
 </script>
 </body>
