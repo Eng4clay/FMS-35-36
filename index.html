@@ -1,436 +1,1866 @@
+ 
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
-  <title>🇸🇦 نظام سباهي | إدارة جودة المنشآت الصحية FMS.35 & FMS.36</title>
-  <!-- الخطوط والأيقونات -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- مكتبات التصدير -->
-  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <style>
-    * { font-family: 'Cairo', 'Inter', sans-serif; }
-    body { background: #F3F4F6; }
-    .card { background: white; border-radius: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); padding: 1.5rem; }
-    .tab-active { background: #1E3A8A; color: white !important; border-radius: 0.75rem 0.75rem 0 0; }
-    .badge-compliant { background: #10B981; color: white; padding: 0.2rem 1rem; border-radius: 2rem; font-weight: 600; }
-    .badge-noncompliant { background: #EF4444; color: white; padding: 0.2rem 1rem; border-radius: 2rem; font-weight: 600; }
-    .badge-warning { background: #F59E0B; color: white; padding: 0.2rem 1rem; border-radius: 2rem; font-weight: 600; }
-    .alert-panel { background: #FEF2F2; border-right: 6px solid #EF4444; padding: 1.5rem; border-radius: 1rem; }
-    .btn-primary { background: #1E3A8A; color: white; padding: 0.6rem 1.2rem; border-radius: 0.75rem; font-weight: 600; transition: 0.2s; border: none; cursor: pointer; }
-    .btn-primary:hover { background: #1e4a9e; }
-    .btn-outline { border: 1px solid #d1d5db; background: white; padding: 0.5rem 1rem; border-radius: 0.75rem; cursor: pointer; transition: 0.2s; }
-    .btn-outline:hover { background: #F9FAFB; }
-    .btn-danger { background: #EF4444; color: white; padding: 0.4rem 0.8rem; border-radius: 0.5rem; font-size: 0.875rem; cursor: pointer; }
-    input, select, textarea { border: 1px solid #E5E7EB; border-radius: 0.6rem; padding: 0.6rem; width: 100%; background: white; }
-    label { font-weight: 500; color: #1F2937; margin-bottom: 0.3rem; display: block; font-size: 0.9rem; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-    th { background: #F9FAFB; font-weight: 600; color: #1F2937; }
-    td, th { border: 1px solid #E5E7EB; padding: 0.6rem; text-align: center; vertical-align: middle; }
-    .section-title { font-size: 1.2rem; font-weight: 700; color: #1E3A8A; border-bottom: 2px solid #E5E7EB; padding-bottom: 0.5rem; margin-bottom: 1rem; }
-    @media print {
-      .no-print, .tab-btn, button, .export-buttons, #actionNotification, .kpi-card, #langToggle { display: none !important; }
-      body { background: white; }
-      .card { box-shadow: none; border: 1px solid #ccc; padding: 0.5rem; }
-      input, select { border: none; background: transparent; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBAHI – نظام مراقبة جودة البيئة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;900&family=Barlow+Condensed:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ═══════════════════════════════════════════════════════════
+   ROOT TOKENS
+═══════════════════════════════════════════════════════════ */
+:root {
+  --ink:        #0A0E1A;
+  --ink-2:      #0F1628;
+  --ink-3:      #151E35;
+  --ink-4:      #1C2740;
+  --ink-5:      #243352;
+  --edge:       #2A3B5C;
+  --edge-2:     #354970;
+  --teal:       #00C9B1;
+  --teal-dim:   #009E8D;
+  --teal-glow:  rgba(0,201,177,0.18);
+  --gold:       #F0B429;
+  --gold-dim:   #C8952A;
+  --crimson:    #FF4757;
+  --crimson-dim:#CC3A47;
+  --emerald:    #2ECC71;
+  --emerald-dim:#27AE60;
+  --amber:      #FF9F43;
+  --sky:        #48CAE4;
+  --text:       #E8EDF8;
+  --text-2:     #A8B4CC;
+  --text-3:     #6B7A96;
+  --text-4:     #3E4F6A;
+  --white:      #FFFFFF;
+  --r-sm:       6px;
+  --r:          10px;
+  --r-lg:       16px;
+  --r-xl:       22px;
+  --shadow-sm:  0 2px 8px rgba(0,0,0,.35);
+  --shadow:     0 4px 20px rgba(0,0,0,.45);
+  --shadow-lg:  0 8px 40px rgba(0,0,0,.55);
+  --glow-teal:  0 0 20px rgba(0,201,177,.25), 0 0 60px rgba(0,201,177,.08);
+  --glow-red:   0 0 20px rgba(255,71,87,.3);
+  --f-display:  'Barlow Condensed', sans-serif;
+  --f-body:     'Cairo', sans-serif;
+  --f-mono:     'IBM Plex Mono', monospace;
+  --trans:      all .2s cubic-bezier(.4,0,.2,1);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BASE
+═══════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--f-body);
+  background: var(--ink);
+  color: var(--text);
+  min-height: 100vh;
+  direction: rtl;
+  overflow-x: hidden;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0,201,177,.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0,100,180,.05) 0%, transparent 50%);
+}
+body.ltr { direction: ltr; }
+body.ltr * { font-family: var(--f-display), var(--f-body); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--ink-2); }
+::-webkit-scrollbar-thumb { background: var(--edge-2); border-radius: 99px; }
+
+/* ═══════════════════════════════════════════════════════════
+   TOPBAR
+═══════════════════════════════════════════════════════════ */
+.topbar {
+  background: var(--ink-2);
+  border-bottom: 1px solid var(--edge);
+  position: sticky; top: 0; z-index: 200;
+  backdrop-filter: blur(20px);
+}
+.topbar-inner {
+  max-width: 1440px; margin: 0 auto;
+  padding: 0 28px;
+  height: 64px;
+  display: flex; align-items: center; gap: 16px;
+}
+.logo-mark {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--teal), #0087A8);
+  border-radius: var(--r);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--f-display);
+  font-size: 13px; font-weight: 800; color: var(--ink);
+  letter-spacing: -0.5px; flex-shrink: 0;
+  box-shadow: var(--glow-teal);
+}
+.brand-stack { flex: 1; min-width: 0; }
+.brand-name {
+  font-size: 15px; font-weight: 700; color: var(--white);
+  cursor: pointer; display: inline-block;
+  transition: color .2s;
+}
+.brand-name:hover { color: var(--teal); }
+.brand-name:focus { outline: 1px dashed var(--teal); border-radius: 3px; padding: 0 3px; }
+.brand-sub {
+  font-size: 10px; color: var(--text-3); margin-top: 1px;
+  font-family: var(--f-mono); letter-spacing: .4px;
+}
+.topbar-actions { display: flex; align-items: center; gap: 8px; }
+
+/* Pill buttons */
+.pill-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: 99px; border: 1px solid var(--edge);
+  background: var(--ink-3); color: var(--text-2);
+  font-size: 11px; font-weight: 600; cursor: pointer;
+  font-family: var(--f-body); transition: var(--trans);
+}
+body.ltr .pill-btn { font-family: var(--f-display); font-size: 12px; }
+.pill-btn:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-glow); }
+.pill-btn.accent { background: var(--gold); color: var(--ink); border-color: var(--gold); font-weight: 700; }
+.pill-btn.accent:hover { background: var(--gold-dim); filter: brightness(1.05); }
+
+/* Live indicator */
+.live-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--emerald);
+  box-shadow: 0 0 0 0 rgba(46,204,113,.4);
+  animation: livebeat 2s infinite;
+  display: inline-block;
+}
+@keyframes livebeat {
+  0%,100% { box-shadow: 0 0 0 0 rgba(46,204,113,.4); }
+  70%      { box-shadow: 0 0 0 6px rgba(46,204,113,0); }
+}
+
+/* Status bar */
+.status-bar {
+  background: var(--ink-3); border-bottom: 1px solid var(--edge);
+  padding: 6px 28px;
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+}
+.status-bar-inner { max-width: 1440px; margin: 0 auto; width: 100%; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.status-chip {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 10px; font-family: var(--f-mono); color: var(--text-3);
+}
+.status-chip strong { color: var(--text-2); }
+.status-sep { width: 1px; height: 12px; background: var(--edge); }
+
+/* ═══════════════════════════════════════════════════════════
+   TABS
+═══════════════════════════════════════════════════════════ */
+.tabs-strip {
+  background: var(--ink-2); border-bottom: 1px solid var(--edge);
+}
+.tabs-strip-inner {
+  max-width: 1440px; margin: 0 auto; padding: 0 28px;
+  display: flex; gap: 2px; overflow-x: auto;
+}
+.tabs-strip-inner::-webkit-scrollbar { display: none; }
+.tab-trigger {
+  display: flex; align-items: center; gap: 9px;
+  padding: 14px 20px 13px;
+  border: none; background: transparent;
+  color: var(--text-3);
+  font-size: 12px; font-weight: 600;
+  font-family: var(--f-body); cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: var(--trans); position: relative;
+}
+body.ltr .tab-trigger { font-family: var(--f-display); font-size: 13px; letter-spacing: .3px; }
+.tab-trigger:hover { color: var(--text); background: rgba(255,255,255,.03); }
+.tab-trigger.on {
+  color: var(--teal);
+  border-bottom-color: var(--teal);
+  background: rgba(0,201,177,.04);
+}
+.tab-trigger .ti {
+  width: 26px; height: 26px; border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; background: var(--ink-4);
+  transition: var(--trans);
+}
+.tab-trigger.on .ti { background: var(--teal-glow); color: var(--teal); }
+.t-count {
+  background: var(--edge); color: var(--text-2);
+  border-radius: 99px; padding: 1px 7px;
+  font-size: 9px; font-weight: 700; font-family: var(--f-mono);
+  transition: var(--trans);
+}
+.tab-trigger.on .t-count { background: var(--teal); color: var(--ink); }
+
+/* ═══════════════════════════════════════════════════════════
+   MAIN
+═══════════════════════════════════════════════════════════ */
+.main { max-width: 1440px; margin: 0 auto; padding: 28px 28px 80px; }
+.tab-panel { display: none; animation: panelIn .3s ease; }
+.tab-panel.on { display: block; }
+@keyframes panelIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+/* ═══════════════════════════════════════════════════════════
+   KPI STRIP
+═══════════════════════════════════════════════════════════ */
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px; margin-bottom: 28px;
+}
+.kpi-tile {
+  background: var(--ink-2);
+  border: 1px solid var(--edge);
+  border-radius: var(--r-lg);
+  padding: 18px 20px;
+  position: relative; overflow: hidden;
+  transition: var(--trans);
+}
+.kpi-tile:hover { border-color: var(--edge-2); transform: translateY(-2px); }
+.kpi-tile::before {
+  content: '';
+  position: absolute; bottom: 0; right: 0;
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  opacity: .06;
+  transform: translate(30%, 30%);
+}
+.kpi-tile.k-total::before  { background: var(--sky); }
+.kpi-tile.k-ok::before     { background: var(--emerald); }
+.kpi-tile.k-bad::before    { background: var(--crimson); }
+.kpi-tile.k-rate::before   { background: var(--gold); }
+.kpi-lbl { font-size: 10px; color: var(--text-3); font-family: var(--f-mono); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 6px; }
+.kpi-num { font-size: 34px; font-weight: 800; line-height: 1; font-family: var(--f-display); }
+.kpi-tile.k-total .kpi-num { color: var(--sky); }
+.kpi-tile.k-ok .kpi-num    { color: var(--emerald); }
+.kpi-tile.k-bad .kpi-num   { color: var(--crimson); }
+.kpi-tile.k-rate .kpi-num  { color: var(--gold); }
+.kpi-sub { font-size: 10px; color: var(--text-4); margin-top: 4px; font-family: var(--f-mono); }
+.pbar-wrap { margin-top: 8px; }
+.pbar-bg { height: 3px; background: var(--edge); border-radius: 99px; overflow: hidden; }
+.pbar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--teal), #48CAE4); transition: width .6s cubic-bezier(.4,0,.2,1); }
+
+/* ═══════════════════════════════════════════════════════════
+   SECTION HEADER
+═══════════════════════════════════════════════════════════ */
+.sec-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 18px; flex-wrap: wrap; gap: 10px;
+}
+.sec-title {
+  font-size: 11px; font-family: var(--f-mono); text-transform: uppercase;
+  letter-spacing: 1.5px; color: var(--teal); display: flex; align-items: center; gap: 10px;
+}
+.sec-title::before { content: ''; display: block; width: 18px; height: 2px; background: var(--teal); border-radius: 1px; }
+
+/* ═══════════════════════════════════════════════════════════
+   LOCATION CARDS GRID
+═══════════════════════════════════════════════════════════ */
+.locs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  gap: 18px; margin-bottom: 36px;
+}
+@media (max-width: 560px) { .locs-grid { grid-template-columns: 1fr; } }
+
+/* ─── Card ─── */
+.lcard {
+  background: var(--ink-2);
+  border: 1px solid var(--edge);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  transition: var(--trans);
+  position: relative;
+}
+.lcard:hover { border-color: var(--edge-2); box-shadow: var(--shadow); }
+.lcard::after {
+  content: '';
+  position: absolute; inset: 0; border-radius: var(--r-xl);
+  border: 1px solid transparent;
+  pointer-events: none;
+  transition: border-color .3s;
+}
+.lcard:hover::after { border-color: rgba(0,201,177,.1); }
+
+/* Card head */
+.lcard-head {
+  padding: 14px 18px;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+  border-bottom: 1px solid var(--edge);
+  background: var(--ink-3);
+}
+.lcard-titles {}
+.lcard-en {
+  font-size: 14px; font-weight: 700; color: var(--white);
+  font-family: var(--f-display); letter-spacing: .3px;
+}
+.lcard-ar {
+  font-size: 11px; color: var(--text-3); margin-top: 2px;
+}
+.lcard-tags { display: flex; gap: 6px; flex-wrap: wrap; flex-shrink: 0; }
+
+/* Tags / Chips */
+.chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 9px; border-radius: 99px;
+  font-size: 9px; font-weight: 700; letter-spacing: .3px;
+  font-family: var(--f-mono); text-transform: uppercase; border: 1px solid;
+}
+.chip-pos  { color: var(--emerald); border-color: rgba(46,204,113,.3); background: rgba(46,204,113,.08); }
+.chip-neg  { color: var(--crimson); border-color: rgba(255,71,87,.3);  background: rgba(255,71,87,.08); }
+.chip-mix  { color: var(--amber);   border-color: rgba(255,159,67,.3); background: rgba(255,159,67,.08); }
+.chip-ach  { color: var(--gold);    border-color: rgba(240,180,41,.3); background: rgba(240,180,41,.08); }
+.chip-spl  { color: var(--sky);     border-color: rgba(72,202,228,.3); background: rgba(72,202,228,.08); }
+
+/* Card body */
+.lcard-body { padding: 18px; }
+
+/* Form grid */
+.fg2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.fg3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.fgf { grid-column: 1 / -1; }
+@media (max-width: 480px) { .fg2, .fg3 { grid-template-columns: 1fr; } }
+
+/* Field */
+.ff { display: flex; flex-direction: column; gap: 5px; }
+.fl {
+  font-size: 10px; font-weight: 600; color: var(--text-3);
+  font-family: var(--f-mono); text-transform: uppercase; letter-spacing: .5px;
+  display: flex; align-items: center; gap: 5px;
+}
+.fl i { color: var(--teal); font-size: 9px; }
+
+/* Inputs */
+.fi {
+  background: var(--ink-3); border: 1px solid var(--edge);
+  border-radius: var(--r); padding: 9px 12px;
+  color: var(--text); font-size: 13px;
+  font-family: var(--f-body); width: 100%;
+  transition: var(--trans);
+}
+body.ltr .fi { font-family: var(--f-display); font-size: 13px; }
+.fi::placeholder { color: var(--text-4); }
+.fi:focus { outline: none; border-color: var(--teal); background: var(--ink-4); box-shadow: 0 0 0 3px rgba(0,201,177,.1); }
+.fi.v-ok  { border-color: var(--emerald); background: rgba(46,204,113,.05); }
+.fi.v-bad { border-color: var(--crimson); background: rgba(255,71,87,.05); }
+select.fi { cursor: pointer; }
+textarea.fi { resize: vertical; min-height: 56px; }
+
+/* Status badge under input */
+.fistatus {
+  display: flex; align-items: center; gap: 5px;
+  padding: 4px 8px; border-radius: var(--r-sm);
+  font-size: 10px; font-weight: 600; font-family: var(--f-mono);
+  min-height: 24px; transition: var(--trans);
+}
+.fistatus.idle    { background: rgba(255,255,255,.03); color: var(--text-4); }
+.fistatus.ok      { background: rgba(46,204,113,.1);   color: var(--emerald); }
+.fistatus.bad     { background: rgba(255,71,87,.1);    color: var(--crimson); }
+
+/* Divider */
+.hline { height: 1px; background: var(--edge); margin: 14px 0; }
+
+/* Calc sub-section */
+.calc-sub {
+  background: var(--ink-3); border: 1px dashed var(--edge);
+  border-radius: var(--r-lg); padding: 14px; margin-top: 6px;
+}
+.calc-sub-title {
+  font-size: 9px; font-family: var(--f-mono); text-transform: uppercase;
+  letter-spacing: 1px; color: var(--text-4); margin-bottom: 10px;
+  display: flex; align-items: center; gap: 6px;
+}
+.calc-sub-title::after { content: ''; flex: 1; height: 1px; background: var(--edge); }
+
+/* Compliance row */
+.comp-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; border-radius: var(--r);
+  border: 1px solid var(--edge); margin-top: 14px;
+  transition: var(--trans); gap: 10px; flex-wrap: wrap;
+}
+.comp-row.idle    { background: transparent; }
+.comp-row.ok      { background: rgba(46,204,113,.07);  border-color: rgba(46,204,113,.25); }
+.comp-row.bad     { background: rgba(255,71,87,.07);   border-color: rgba(255,71,87,.25); }
+.comp-status-txt {
+  font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 7px;
+  font-family: var(--f-display); letter-spacing: .3px;
+}
+.comp-status-txt.ok  { color: var(--emerald); }
+.comp-status-txt.bad { color: var(--crimson); }
+.comp-status-txt.idle { color: var(--text-3); }
+
+/* Action button */
+.abtn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 20px; border-radius: 99px; border: none;
+  font-size: 12px; font-weight: 700; cursor: pointer;
+  font-family: var(--f-body); transition: var(--trans);
+}
+body.ltr .abtn { font-family: var(--f-display); letter-spacing: .3px; }
+.abtn-primary { background: linear-gradient(135deg, var(--teal), #009e8d); color: var(--ink); }
+.abtn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: var(--glow-teal); }
+.abtn-calc {
+  background: var(--ink-4); border: 1px solid var(--edge-2);
+  color: var(--teal); font-size: 11px; padding: 7px 14px;
+}
+.abtn-calc:hover { border-color: var(--teal); background: var(--teal-glow); }
+.abtn-sm { padding: 5px 12px; font-size: 10px; }
+.abtn-danger { background: rgba(255,71,87,.15); border: 1px solid rgba(255,71,87,.3); color: var(--crimson); }
+.abtn-danger:hover { background: rgba(255,71,87,.25); }
+.abtn-outline { background: transparent; border: 1px solid var(--edge); color: var(--text-2); }
+.abtn-outline:hover { border-color: var(--text-2); }
+
+/* ═══════════════════════════════════════════════════════════
+   DATA TABLE
+═══════════════════════════════════════════════════════════ */
+.dtable-card {
+  background: var(--ink-2); border: 1px solid var(--edge);
+  border-radius: var(--r-xl); overflow: hidden;
+}
+.dtable-hdr {
+  padding: 14px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 10px;
+  background: var(--ink-3); border-bottom: 1px solid var(--edge);
+}
+.dtable-hdr-title {
+  font-size: 11px; font-family: var(--f-mono); text-transform: uppercase;
+  letter-spacing: 1px; color: var(--text-2);
+  display: flex; align-items: center; gap: 8px;
+}
+.dtable-hdr-title i { color: var(--teal); }
+.dtable-hdr-actions { display: flex; gap: 8px; }
+.tbl-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 11px; }
+thead { background: var(--ink-3); }
+thead th {
+  padding: 10px 14px; color: var(--text-3);
+  font-family: var(--f-mono); text-transform: uppercase;
+  letter-spacing: .5px; font-weight: 600; text-align: right;
+  white-space: nowrap; border-bottom: 1px solid var(--edge);
+}
+body.ltr thead th { text-align: left; }
+tbody tr { border-bottom: 1px solid rgba(255,255,255,.04); transition: background .15s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: rgba(255,255,255,.02); }
+tbody td { padding: 9px 14px; color: var(--text-2); vertical-align: middle; }
+.td-loc-en { color: var(--text); font-weight: 600; display: block; }
+.td-loc-ar { color: var(--text-4); font-size: 10px; }
+.td-ok  { color: var(--emerald); font-weight: 700; font-family: var(--f-mono); }
+.td-bad { color: var(--crimson); font-weight: 700; font-family: var(--f-mono); }
+.td-num { font-family: var(--f-mono); color: var(--sky); }
+.td-empty { text-align: center; padding: 48px 20px; color: var(--text-4); }
+.td-empty i { display: block; font-size: 28px; margin-bottom: 10px; opacity: .3; }
+
+/* ═══════════════════════════════════════════════════════════
+   REFERENCE TAB
+═══════════════════════════════════════════════════════════ */
+.ref-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 18px; margin-bottom: 28px;
+}
+@media (max-width: 400px) { .ref-grid { grid-template-columns: 1fr; } }
+
+.rcard {
+  background: var(--ink-2); border: 1px solid var(--edge);
+  border-radius: var(--r-xl); overflow: hidden;
+}
+.rcard-hdr {
+  padding: 14px 18px; background: var(--ink-3);
+  border-bottom: 1px solid var(--edge);
+  display: flex; align-items: center; gap: 10px;
+}
+.rcard-hdr-icon {
+  width: 32px; height: 32px; border-radius: var(--r-sm);
+  background: var(--ink-4); display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: var(--teal); flex-shrink: 0;
+}
+.rcard-hdr-title { font-size: 13px; font-weight: 700; color: var(--white); }
+.rcard-body { padding: 18px; }
+
+/* Code blocks */
+.code-block {
+  background: #060A10; border: 1px solid var(--edge);
+  border-radius: var(--r); padding: 16px 18px; margin: 10px 0;
+  font-family: var(--f-mono); font-size: 12.5px; line-height: 2;
+  position: relative; overflow: hidden;
+}
+.code-block::before {
+  content: ''; position: absolute;
+  top: 0; right: 0; left: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--teal), transparent);
+  opacity: .5;
+}
+.cv  { color: #7DD3FA; }  /* variable  – blue  */
+.ck  { color: #4ADE80; }  /* keyword   – green */
+.cn  { color: #FCD34D; }  /* number    – yellow*/
+.cc  { color: #475569; }  /* comment   – gray  */
+.cp  { color: #F9A8D4; }  /* operator  – pink  */
+
+/* Small table inside ref */
+.rtable { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; }
+.rtable th {
+  padding: 7px 12px; background: var(--ink-3);
+  color: var(--text-3); font-family: var(--f-mono);
+  text-transform: uppercase; letter-spacing: .4px;
+  text-align: right; font-weight: 600;
+}
+body.ltr .rtable th { text-align: left; }
+.rtable td { padding: 7px 12px; border-bottom: 1px solid rgba(255,255,255,.04); color: var(--text-2); }
+.rtable tr:last-child td { border-bottom: none; }
+
+/* Note box */
+.note-strip {
+  background: rgba(240,180,41,.07); border: 1px solid rgba(240,180,41,.2);
+  border-radius: var(--r); padding: 12px 14px;
+  font-size: 11px; color: #C09020; margin-top: 12px;
+  display: flex; gap: 8px; line-height: 1.7;
+}
+.note-strip i { flex-shrink: 0; margin-top: 1px; color: var(--gold); }
+
+/* ═══════════════════════════════════════════════════════════
+   ENGINEER CALCULATOR
+═══════════════════════════════════════════════════════════ */
+.ecalc-card {
+  background: var(--ink-2); border: 1px solid var(--edge);
+  border-radius: var(--r-xl); overflow: hidden; margin-bottom: 28px;
+}
+.ecalc-hdr {
+  background: linear-gradient(135deg, #05282B, #082c30);
+  border-bottom: 1px solid var(--teal-dim);
+  padding: 16px 20px;
+  display: flex; align-items: center; gap: 14px;
+}
+.ecalc-hdr-icon {
+  width: 40px; height: 40px; border-radius: var(--r);
+  background: var(--teal-glow); border: 1px solid rgba(0,201,177,.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: var(--teal);
+}
+.ecalc-hdr-title { font-size: 15px; font-weight: 700; color: var(--white); }
+.ecalc-hdr-sub { font-size: 10px; color: var(--teal-dim); font-family: var(--f-mono); margin-top: 1px; }
+.ecalc-body { padding: 20px; }
+
+.calctabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+.ctab {
+  padding: 6px 14px; border-radius: 99px;
+  border: 1px solid var(--edge); background: transparent;
+  font-size: 10px; font-weight: 700; cursor: pointer;
+  font-family: var(--f-mono); text-transform: uppercase; letter-spacing: .4px;
+  color: var(--text-3); transition: var(--trans);
+}
+.ctab.on { background: var(--teal-glow); border-color: rgba(0,201,177,.4); color: var(--teal); }
+.ctab:hover:not(.on) { border-color: var(--edge-2); color: var(--text-2); }
+
+.cpanel { display: none; }
+.cpanel.on { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; align-items: start; }
+@media (max-width: 520px) { .cpanel.on { grid-template-columns: 1fr; } }
+.cpanel-inputs { display: flex; flex-direction: column; gap: 12px; }
+
+/* Result display */
+.cresult {
+  background: #060A10; border: 1px solid var(--edge);
+  border-radius: var(--r-lg); padding: 22px 20px;
+  min-height: 130px; display: flex; flex-direction: column;
+  justify-content: center; gap: 8px;
+  position: relative; overflow: hidden;
+}
+.cresult::before {
+  content: ''; position: absolute;
+  top: 0; right: 0; left: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--teal), transparent);
+  opacity: .4;
+}
+.cresult-lbl { font-size: 9px; color: var(--text-4); font-family: var(--f-mono); text-transform: uppercase; letter-spacing: .8px; }
+.cresult-val { font-size: 42px; font-weight: 700; color: var(--teal); font-family: var(--f-mono); line-height: 1; }
+.cresult-unit { font-size: 13px; color: var(--teal-dim); font-family: var(--f-mono); }
+.cresult-detail { font-size: 10px; color: var(--text-4); font-family: var(--f-mono); margin-top: 6px; line-height: 1.6; }
+
+/* Formula inline hint */
+.fhint {
+  background: #060A10; border: 1px solid var(--edge);
+  border-radius: var(--r-sm); padding: 10px 12px;
+  font-family: var(--f-mono); font-size: 11px; color: var(--text-4); line-height: 1.8;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PROTOCOL CARDS
+═══════════════════════════════════════════════════════════ */
+.proto-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px; margin-bottom: 24px;
+}
+.proto-card {
+  border-radius: var(--r-lg); padding: 16px;
+  border: 1px solid; display: flex; flex-direction: column; gap: 6px;
+}
+.proto-card.ph { background: rgba(255,71,87,.07);   border-color: rgba(255,71,87,.25); }
+.proto-card.pm { background: rgba(255,159,67,.07);  border-color: rgba(255,159,67,.25); }
+.proto-card.pl { background: rgba(46,204,113,.07);  border-color: rgba(46,204,113,.25); }
+.proto-pri { font-size: 9px; font-weight: 700; font-family: var(--f-mono); text-transform: uppercase; letter-spacing: .6px; }
+.proto-card.ph .proto-pri { color: var(--crimson); }
+.proto-card.pm .proto-pri { color: var(--amber); }
+.proto-card.pl .proto-pri { color: var(--emerald); }
+.proto-action { font-size: 13px; font-weight: 700; color: var(--text); font-family: var(--f-display); letter-spacing: .2px; }
+.proto-dept { font-size: 10px; color: var(--text-3); }
+
+/* ═══════════════════════════════════════════════════════════
+   ALERT TOAST
+═══════════════════════════════════════════════════════════ */
+#alert-overlay {
+  position: fixed; inset: 0; z-index: 9000;
+  background: rgba(0,0,0,.6); backdrop-filter: blur(4px);
+  display: none; align-items: center; justify-content: center;
+  padding: 20px;
+}
+#alert-overlay.show { display: flex; animation: fadeOvl .25s ease; }
+@keyframes fadeOvl { from { opacity: 0; } to { opacity: 1; } }
+#alert-box {
+  background: var(--ink-2);
+  border: 1px solid rgba(255,71,87,.4);
+  border-radius: var(--r-xl);
+  width: 100%; max-width: 520px;
+  box-shadow: var(--glow-red), var(--shadow-lg);
+  animation: boxPop .3s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes boxPop { from { transform: scale(.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.alert-head {
+  padding: 16px 18px; background: rgba(255,71,87,.08);
+  border-bottom: 1px solid rgba(255,71,87,.2);
+  display: flex; align-items: center; gap: 10px;
+}
+.alert-head-icon { font-size: 20px; color: var(--crimson); }
+.alert-head-title { font-size: 14px; font-weight: 800; color: var(--crimson); flex: 1; font-family: var(--f-display); }
+.alert-close-btn {
+  width: 28px; height: 28px; border-radius: 99px;
+  background: rgba(255,71,87,.1); border: 1px solid rgba(255,71,87,.2);
+  color: var(--crimson); cursor: pointer; font-size: 12px;
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--trans);
+}
+.alert-close-btn:hover { background: rgba(255,71,87,.2); }
+.alert-body { padding: 16px 18px; font-size: 12px; }
+.alert-loc { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 8px; display: flex; align-items: center; gap: 7px; }
+.alert-param-box {
+  background: #060A10; border: 1px solid var(--edge);
+  border-radius: var(--r-sm); padding: 8px 12px;
+  font-family: var(--f-mono); font-size: 11px; color: var(--crimson);
+  margin-bottom: 14px;
+}
+.alert-actions-list { display: flex; flex-direction: column; gap: 2px; }
+.alert-ai {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,.04);
+  font-size: 11px; color: var(--text-2);
+}
+.alert-ai:last-child { border-bottom: none; }
+.alert-ai .pri-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.pri-h { background: var(--crimson); box-shadow: 0 0 6px var(--crimson); }
+.pri-m { background: var(--amber); }
+.pri-l { background: var(--emerald); }
+
+/* ─── Snackbar ─── */
+#snack {
+  position: fixed; bottom: 24px; right: 50%; transform: translateX(50%);
+  padding: 10px 22px; border-radius: 99px;
+  font-size: 12px; font-weight: 700; z-index: 8000;
+  box-shadow: var(--shadow-lg); font-family: var(--f-mono);
+  transition: opacity .3s; opacity: 0; pointer-events: none;
+  white-space: nowrap;
+}
+#snack.show { opacity: 1; }
+#snack.ok  { background: var(--emerald); color: var(--ink); }
+#snack.warn { background: var(--amber); color: var(--ink); }
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .main { padding: 18px 16px 60px; }
+  .topbar-inner { padding: 0 16px; }
+  .tabs-strip-inner { padding: 0 16px; }
+  .status-bar { padding: 6px 16px; }
+  .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+  .locs-grid { grid-template-columns: 1fr; }
+  .ref-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 420px) {
+  .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+  .topbar-inner { gap: 8px; }
+  .brand-sub { display: none; }
+}
+</style>
 </head>
-<body class="p-4 md:p-6" dir="rtl">
+<body>
 
-<div class="max-w-7xl mx-auto">
-
-  <!-- رأس الصفحة -->
-  <div class="flex flex-wrap justify-between items-center mb-5 no-print">
-    <div class="flex items-center gap-3">
-      <i class="fas fa-hospital text-3xl text-[#1E3A8A]"></i>
-      <h1 class="text-2xl md:text-3xl font-bold text-[#1E3A8A]">
-        <span contenteditable="true" id="hospitalNameDisplay">🏥 مستشفى الملك فهد التخصصي</span>
-        <i class="fas fa-pencil-alt text-sm text-gray-400 ms-2"></i>
-      </h1>
+<!-- ══════════════════════════════════════
+     TOP BAR
+══════════════════════════════════════ -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="logo-mark">CBS</div>
+    <div class="brand-stack">
+      <div
+        class="brand-name"
+        id="hospitalName"
+        contenteditable="true"
+        spellcheck="false"
+        title="انقر للتعديل"
+      >مستشفى العيدابي العام</div>
+      <div class="brand-sub" id="brandSub">CBAHI · FMS.35 · FMS.36 · Environmental Quality Monitoring</div>
     </div>
-    <div class="flex gap-2">
-      <button id="langToggle" class="btn-outline"><i class="fas fa-language"></i> English</button>
-      <button onclick="window.print()" class="btn-outline"><i class="fas fa-print"></i> طباعة الصفحة</button>
+    <div class="topbar-actions">
+      <span class="live-dot"></span>
+      <button class="pill-btn" onclick="toggleLang()" id="langBtn">
+        <i class="fas fa-language"></i><span id="langLabel">EN</span>
+      </button>
+      <button class="pill-btn accent" onclick="exportAll()">
+        <i class="fas fa-file-csv"></i>
+        <span data-ar="تصدير الكل" data-en="Export All">تصدير الكل</span>
+      </button>
     </div>
   </div>
+</header>
 
-  <!-- لوحة التنبيهات -->
-  <div id="actionNotification" class="alert-panel mb-6 hidden no-print">
-    <div class="flex items-start gap-4">
-      <i class="fas fa-exclamation-triangle text-4xl text-[#EF4444]"></i>
-      <div class="flex-1">
-        <h3 class="text-xl font-bold text-[#EF4444]">🚨 تنبيه — عدم امتثال مكتشف</h3>
-        <div class="grid md:grid-cols-3 gap-3 mt-3">
-          <div><span class="font-bold">📍 الموقع:</span> <span id="notifLoc">—</span></div>
-          <div><span class="font-bold">📊 القيمة:</span> <span id="notifVal">—</span></div>
-          <div><span class="font-bold">🎯 النطاق:</span> <span id="notifRange">—</span></div>
+<!-- Status bar -->
+<div class="status-bar">
+  <div class="status-bar-inner">
+    <div class="status-chip"><i class="fas fa-calendar-day" style="color:var(--teal)"></i><strong id="todayLabel">—</strong></div>
+    <div class="status-sep"></div>
+    <div class="status-chip"><span data-ar="معيار ASHRAE" data-en="Standard">معيار</span>&nbsp;<strong>ASHRAE 170-2021</strong></div>
+    <div class="status-sep"></div>
+    <div class="status-chip"><span data-ar="المراجع:" data-en="Ref:">المراجع:</span>&nbsp;<strong>CBAHI FMS.35 & FMS.36</strong></div>
+    <div class="status-sep"></div>
+    <div class="status-chip" id="globalKpi">
+      <i class="fas fa-chart-pie" style="color:var(--gold)"></i>
+      <span data-ar="الامتثال الكلي:" data-en="Overall Compliance:">الامتثال الكلي:</span>&nbsp;<strong id="globalComp">—</strong>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TABS NAV
+══════════════════════════════════════ -->
+<div class="tabs-strip">
+  <nav class="tabs-strip-inner">
+    <button class="tab-trigger on" onclick="goTab('fms35',this)">
+      <span class="ti"><i class="fas fa-wind"></i></span>
+      <span data-ar="FMS.35 – تدفق الهواء" data-en="FMS.35 – Airflow">FMS.35 – تدفق الهواء</span>
+      <span class="t-count" id="tc35">0</span>
+    </button>
+    <button class="tab-trigger" onclick="goTab('fms36',this)">
+      <span class="ti"><i class="fas fa-thermometer-half"></i></span>
+      <span data-ar="FMS.36 – الحرارة والرطوبة" data-en="FMS.36 – Temp & Humidity">FMS.36 – الحرارة والرطوبة</span>
+      <span class="t-count" id="tc36">0</span>
+    </button>
+    <button class="tab-trigger" onclick="goTab('ref',this)">
+      <span class="ti"><i class="fas fa-calculator"></i></span>
+      <span data-ar="المراجع والحسابات" data-en="Reference & Formulas">المراجع والحسابات</span>
+    </button>
+  </nav>
+</div>
+
+<!-- ══════════════════════════════════════
+     MAIN CONTENT
+══════════════════════════════════════ -->
+<div class="main">
+
+  <!-- ▓▓▓ FMS.35 TAB ▓▓▓ -->
+  <div id="tab-fms35" class="tab-panel on">
+    <!-- KPIs -->
+    <div class="kpi-strip" id="kpi35">
+      <div class="kpi-tile k-total">
+        <div class="kpi-lbl" data-ar="إجمالي السجلات" data-en="Total Records">إجمالي السجلات</div>
+        <div class="kpi-num" id="k35-tot">0</div>
+        <div class="kpi-sub" data-ar="سجل مُضاف" data-en="records added">سجل مُضاف</div>
+      </div>
+      <div class="kpi-tile k-ok">
+        <div class="kpi-lbl" data-ar="متوافق" data-en="Compliant">متوافق</div>
+        <div class="kpi-num" id="k35-ok">0</div>
+        <div class="kpi-sub" data-ar="ضمن النطاق" data-en="within range">ضمن النطاق</div>
+      </div>
+      <div class="kpi-tile k-bad">
+        <div class="kpi-lbl" data-ar="غير متوافق" data-en="Non-Compliant">غير متوافق</div>
+        <div class="kpi-num" id="k35-bad">0</div>
+        <div class="kpi-sub" data-ar="يستوجب إجراء" data-en="action required">يستوجب إجراء</div>
+      </div>
+      <div class="kpi-tile k-rate">
+        <div class="kpi-lbl" data-ar="نسبة الامتثال" data-en="Compliance Rate">نسبة الامتثال</div>
+        <div class="kpi-num" id="k35-rate">—</div>
+        <div class="pbar-wrap"><div class="pbar-bg"><div class="pbar-fill" id="pb35" style="width:0%"></div></div></div>
+      </div>
+    </div>
+
+    <!-- Forms grid -->
+    <div class="sec-hdr">
+      <div class="sec-title" data-ar="نماذج فحص FMS.35 · 9 مواقع" data-en="FMS.35 Inspection Forms · 9 Locations">نماذج فحص FMS.35 · 9 مواقع</div>
+    </div>
+    <div class="locs-grid" id="grid35"></div>
+
+    <!-- Table -->
+    <div class="dtable-card">
+      <div class="dtable-hdr">
+        <div class="dtable-hdr-title"><i class="fas fa-table"></i><span data-ar="سجل FMS.35" data-en="FMS.35 Log">سجل FMS.35</span></div>
+        <div class="dtable-hdr-actions">
+          <button class="abtn abtn-outline abtn-sm" onclick="exportCSV('fms35')"><i class="fas fa-download"></i><span data-ar="CSV" data-en="CSV">CSV</span></button>
+          <button class="abtn abtn-danger abtn-sm" onclick="clearAll('fms35')"><i class="fas fa-trash-alt"></i><span data-ar="مسح" data-en="Clear">مسح</span></button>
         </div>
-        <div class="bg-white p-4 rounded-lg mt-3">
-          <p class="font-bold mb-2">⚠️ الإجراءات المطلوبة:</p>
-          <div class="grid grid-cols-2 gap-2">
-            <label><input type="checkbox" class="w-5 h-5"> فتح أمر شغل (U&M)</label>
-            <label><input type="checkbox" class="w-5 h-5"> إخطار IPC</label>
-            <label><input type="checkbox" class="w-5 h-5"> إعادة فحص خلال 24 ساعة</label>
-            <label><input type="checkbox" class="w-5 h-5"> تسجيل في نظام الجودة</label>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th data-ar="التاريخ" data-en="Date">التاريخ</th>
+              <th data-ar="الوقت" data-en="Time">الوقت</th>
+              <th data-ar="الموقع" data-en="Location">الموقع</th>
+              <th data-ar="المسؤول" data-en="Inspector">المسؤول</th>
+              <th data-ar="الضغط (Pa)" data-en="Press (Pa)">الضغط</th>
+              <th data-ar="ACH" data-en="ACH">ACH</th>
+              <th data-ar="الاتجاه" data-en="Direction">الاتجاه</th>
+              <th data-ar="الحالة" data-en="Status">الحالة</th>
+              <th data-ar="ملاحظات" data-en="Notes">ملاحظات</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tbody35">
+            <tr><td colspan="11" class="td-empty"><i class="fas fa-inbox"></i><span data-ar="لا توجد سجلات بعد" data-en="No records yet">لا توجد سجلات بعد</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div><!-- /fms35 -->
+
+  <!-- ▓▓▓ FMS.36 TAB ▓▓▓ -->
+  <div id="tab-fms36" class="tab-panel">
+    <div class="kpi-strip" id="kpi36">
+      <div class="kpi-tile k-total">
+        <div class="kpi-lbl" data-ar="إجمالي السجلات" data-en="Total Records">إجمالي السجلات</div>
+        <div class="kpi-num" id="k36-tot">0</div>
+        <div class="kpi-sub" data-ar="سجل مُضاف" data-en="records added">سجل مُضاف</div>
+      </div>
+      <div class="kpi-tile k-ok">
+        <div class="kpi-lbl" data-ar="متوافق" data-en="Compliant">متوافق</div>
+        <div class="kpi-num" id="k36-ok">0</div>
+        <div class="kpi-sub" data-ar="ضمن النطاق" data-en="within range">ضمن النطاق</div>
+      </div>
+      <div class="kpi-tile k-bad">
+        <div class="kpi-lbl" data-ar="غير متوافق" data-en="Non-Compliant">غير متوافق</div>
+        <div class="kpi-num" id="k36-bad">0</div>
+        <div class="kpi-sub" data-ar="يستوجب إجراء" data-en="action required">يستوجب إجراء</div>
+      </div>
+      <div class="kpi-tile k-rate">
+        <div class="kpi-lbl" data-ar="نسبة الامتثال" data-en="Compliance Rate">نسبة الامتثال</div>
+        <div class="kpi-num" id="k36-rate">—</div>
+        <div class="pbar-wrap"><div class="pbar-bg"><div class="pbar-fill" id="pb36" style="width:0%"></div></div></div>
+      </div>
+    </div>
+
+    <div class="sec-hdr">
+      <div class="sec-title" data-ar="نماذج فحص FMS.36 · 5 مواقع" data-en="FMS.36 Inspection Forms · 5 Locations">نماذج فحص FMS.36 · 5 مواقع</div>
+    </div>
+    <div class="locs-grid" id="grid36"></div>
+
+    <div class="dtable-card">
+      <div class="dtable-hdr">
+        <div class="dtable-hdr-title"><i class="fas fa-table"></i><span data-ar="سجل FMS.36" data-en="FMS.36 Log">سجل FMS.36</span></div>
+        <div class="dtable-hdr-actions">
+          <button class="abtn abtn-outline abtn-sm" onclick="exportCSV('fms36')"><i class="fas fa-download"></i><span data-ar="CSV" data-en="CSV">CSV</span></button>
+          <button class="abtn abtn-danger abtn-sm" onclick="clearAll('fms36')"><i class="fas fa-trash-alt"></i><span data-ar="مسح" data-en="Clear">مسح</span></button>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th data-ar="التاريخ" data-en="Date">التاريخ</th>
+              <th data-ar="الوقت" data-en="Time">الوقت</th>
+              <th data-ar="الموقع" data-en="Location">الموقع</th>
+              <th data-ar="المسؤول" data-en="Inspector">المسؤول</th>
+              <th data-ar="الحرارة" data-en="Temp">الحرارة</th>
+              <th data-ar="الرطوبة" data-en="Humidity">الرطوبة</th>
+              <th data-ar="الحالة" data-en="Status">الحالة</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tbody36">
+            <tr><td colspan="9" class="td-empty"><i class="fas fa-inbox"></i><span data-ar="لا توجد سجلات بعد" data-en="No records yet">لا توجد سجلات بعد</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div><!-- /fms36 -->
+
+  <!-- ▓▓▓ REFERENCE TAB ▓▓▓ -->
+  <div id="tab-ref" class="tab-panel">
+
+    <!-- Engineer Calculator -->
+    <div class="ecalc-card">
+      <div class="ecalc-hdr">
+        <div class="ecalc-hdr-icon"><i class="fas fa-calculator"></i></div>
+        <div>
+          <div class="ecalc-hdr-title" data-ar="حاسبة المهندس التفاعلية" data-en="Interactive Engineer Calculator">حاسبة المهندس التفاعلية</div>
+          <div class="ecalc-hdr-sub">ASHRAE 170-2021 · Real-time Engineering Calculations</div>
+        </div>
+      </div>
+      <div class="ecalc-body">
+        <div class="calctabs">
+          <button class="ctab on" onclick="swCalc('ach',this)" data-ar="ACH" data-en="ACH">ACH</button>
+          <button class="ctab" onclick="swCalc('q',this)" data-ar="Q من السرعة" data-en="Q from v">Q من السرعة</button>
+          <button class="ctab" onclick="swCalc('dp',this)" data-ar="ΔP الضغط" data-en="ΔP Pressure">ΔP الضغط</button>
+          <button class="ctab" onclick="swCalc('vol',this)" data-ar="الحجم" data-en="Volume">الحجم</button>
+        </div>
+
+        <!-- ACH -->
+        <div class="cpanel on" id="cp-ach">
+          <div class="cpanel-inputs">
+            <div class="ff">
+              <label class="fl"><i class="fas fa-wind"></i><span data-ar="معدل التدفق Q (م³/ساعة)" data-en="Airflow Q (m³/h)">معدل التدفق Q (م³/ساعة)</span></label>
+              <input type="number" id="c-q" class="fi" placeholder="مثال: 2400" oninput="doACH()">
+            </div>
+            <div class="ff">
+              <label class="fl"><i class="fas fa-cube"></i><span data-ar="حجم الغرفة V (م³)" data-en="Room Volume V (m³)">حجم الغرفة V (م³)</span></label>
+              <input type="number" id="c-v" class="fi" placeholder="مثال: 120" oninput="doACH()">
+            </div>
+            <div class="fhint"><span class="cv">ACH</span> <span class="cp">=</span> <span class="cv">Q</span> <span class="cp">/</span> <span class="cv">V</span><br><span class="cc">// Q in m³/h,  V = L×W×H in m³</span></div>
+          </div>
+          <div class="cresult">
+            <div class="cresult-lbl">Air Changes per Hour</div>
+            <div class="cresult-val" id="r-ach">—</div>
+            <div class="cresult-unit">ACH</div>
+            <div class="cresult-detail" id="d-ach"></div>
           </div>
         </div>
-        <div class="flex gap-3 mt-4">
-          <button class="btn-primary" onclick="document.getElementById('actionNotification').classList.add('hidden')"><i class="fas fa-check"></i> تأكيد الإجراءات</button>
-          <button class="btn-outline" onclick="document.getElementById('actionNotification').classList.add('hidden')">إغلاق</button>
+
+        <!-- Q from v -->
+        <div class="cpanel" id="cp-q">
+          <div class="cpanel-inputs">
+            <div class="ff">
+              <label class="fl"><i class="fas fa-vector-square"></i><span data-ar="مساحة الفتحة A (م²)" data-en="Diffuser Area A (m²)">مساحة الفتحة A (م²)</span></label>
+              <input type="number" id="c-a" class="fi" placeholder="مثال: 0.09" step="0.001" oninput="doQ()">
+            </div>
+            <div class="ff">
+              <label class="fl"><i class="fas fa-tachometer-alt"></i><span data-ar="سرعة الهواء v (م/ث)" data-en="Air Velocity v (m/s)">سرعة الهواء v (م/ث)</span></label>
+              <input type="number" id="c-vv" class="fi" placeholder="مثال: 1.5" step="0.1" oninput="doQ()">
+            </div>
+            <div class="fhint"><span class="cv">Q</span> <span class="cp">=</span> <span class="cv">A</span> <span class="cp">×</span> <span class="cv">v</span> <span class="cp">×</span> <span class="cn">3600</span><br><span class="cc">// result in m³/h</span></div>
+          </div>
+          <div class="cresult">
+            <div class="cresult-lbl">Supply Airflow Rate</div>
+            <div class="cresult-val" id="r-q">—</div>
+            <div class="cresult-unit">m³/h</div>
+            <div class="cresult-detail" id="d-q"></div>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- مؤشرات الأداء -->
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 no-print">
-    <div class="card !p-4 text-center kpi-card"><span class="text-gray-500 text-sm">نسبة الامتثال</span><div class="text-3xl font-bold text-[#10B981]" id="overallCompliance">100%</div><div class="w-full bg-gray-200 h-2 rounded-full mt-1"><div id="complianceBar" class="bg-[#10B981] h-2 rounded-full" style="width:100%"></div></div></div>
-    <div class="card !p-4 text-center kpi-card"><span class="text-gray-500 text-sm">إجمالي السجلات</span><div class="text-3xl font-bold" id="totalRecords">0</div></div>
-    <div class="card !p-4 text-center kpi-card"><span class="text-gray-500 text-sm">متوافق</span><div class="text-3xl font-bold text-[#10B981]" id="compliantCount">0</div></div>
-    <div class="card !p-4 text-center kpi-card"><span class="text-gray-500 text-sm">مخالفات</span><div class="text-3xl font-bold text-[#EF4444]" id="nonCompliantCount">0</div></div>
-  </div>
-
-  <!-- التبويبات الرئيسية -->
-  <div class="flex flex-wrap border-b border-gray-200 mb-5 gap-1 no-print">
-    <button class="tab-btn tab-active px-6 py-3 font-semibold" data-tab="fms35"><i class="fas fa-wind me-2"></i> FMS.35 تدفق الهواء</button>
-    <button class="tab-btn px-6 py-3 font-semibold text-gray-600" data-tab="fms36"><i class="fas fa-temperature-high me-2"></i> FMS.36 الحرارة والرطوبة</button>
-    <button class="tab-btn px-6 py-3 font-semibold text-gray-600" data-tab="reference"><i class="fas fa-calculator me-2"></i> المراجع والحسابات</button>
-  </div>
-
-  <!-- ########################################### تبويب FMS.35 ########################################### -->
-  <div id="tab-fms35" class="tab-content">
-    <!-- قائمة المواقع -->
-    <div class="mb-4 no-print">
-      <label class="inline-block font-bold ms-2">📍 اختر الموقع للمعاينة والتسجيل:</label>
-      <select id="fms35LocationSelect" class="w-full md:w-2/3 text-lg p-3 border-2">
-        <option value="or">🏥 غرف العمليات (Operating Room) - ضغط موجب | ACH ≥20 | +2.5~+6 Pa</option>
-        <option value="ld">🤰 غرف الولادة (Labor & Delivery) - ضغط موجب | ACH ≥15 | +2.5~+6 Pa</option>
-        <option value="iso">🚫 غرف العزل (Isolation Rooms) - ضغط سالب | ACH ≥12 | -2.5~-16 Pa</option>
-        <option value="ccu">❤️ الرعاية الحرجة (Critical Care) - ضغط موجب | ACH ≥12 | +2.5~+6 Pa</option>
-        <option value="clean">🧼 التخزين النظيف (Clean Utility) - ضغط موجب | ACH ≥12 | +2.5~+6 Pa</option>
-        <option value="dirty">🗑️ التخزين المتسخ (Dirty Utility) - ضغط سالب | ACH ≥12 | -2.5~-16 Pa</option>
-        <option value="jan">🧹 غرفة عامل النظافة (Janitorial) - ضغط سالب | ACH ≥10 | -2.5~-16 Pa</option>
-        <option value="lab">🔬 المختبر (Laboratory) - ضغط سالب | ACH ≥12 | -2.5~-16 Pa</option>
-        <option value="triage">🚑 الفرز والحوادث (Triage) - ضغط موجب | ACH ≥12 | +2.5~+6 Pa</option>
-        <option value="sterile">🧪 التعقيم المركزي (Central Sterilization) - ضغط موجب | ACH ≥15 | +2.5~+6 Pa</option>
-      </select>
-    </div>
-
-    <!-- النموذج الموحد (يتم بناؤه ديناميكياً) -->
-    <div id="fms35DynamicForm" class="card mb-6"></div>
-
-    <!-- جدول السجلات FMS.35 -->
-    <div class="card no-print">
-      <div class="flex justify-between items-center mb-3">
-        <h3 class="text-xl font-bold">📋 سجلات FMS.35 المحفوظة</h3>
-        <div class="flex gap-2">
-          <button id="exportFms35Csv" class="btn-outline"><i class="fas fa-file-csv"></i> CSV</button>
-          <button id="exportFms35Excel" class="btn-outline"><i class="fas fa-file-excel"></i> Excel</button>
-          <button id="printFms35Table" class="btn-outline"><i class="fas fa-print"></i> طباعة</button>
+        <!-- ΔP -->
+        <div class="cpanel" id="cp-dp">
+          <div class="cpanel-inputs">
+            <div class="ff">
+              <label class="fl"><i class="fas fa-tachometer-alt"></i><span data-ar="سرعة الهواء v (م/ث)" data-en="Air Velocity v (m/s)">سرعة الهواء v (م/ث)</span></label>
+              <input type="number" id="c-vp" class="fi" placeholder="مثال: 2.0" step="0.1" oninput="doDP()">
+            </div>
+            <div class="fhint"><span class="cv">ΔP</span> <span class="cp">=</span> <span class="cn">0.5</span> <span class="cp">×</span> <span class="cv">ρ</span> <span class="cp">×</span> <span class="cv">v²</span><br><span class="cv">ρ</span> <span class="cp">=</span> <span class="cn">1.2</span> <span class="cc">kg/m³</span> <span class="cc">// Standard air</span></div>
+          </div>
+          <div class="cresult">
+            <div class="cresult-lbl">Pressure Differential</div>
+            <div class="cresult-val" id="r-dp">—</div>
+            <div class="cresult-unit">Pa</div>
+            <div class="cresult-detail" id="d-dp"></div>
+          </div>
         </div>
-      </div>
-      <div class="overflow-auto max-h-96">
-        <table id="fms35MainTable">
-          <thead><tr><th>التاريخ</th><th>الموقع</th><th>عدد الغرف</th><th>الحالة</th><th>توقيع المهندس</th><th>إجراءات</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
 
-  <!-- ########################################### تبويب FMS.36 ########################################### -->
-  <div id="tab-fms36" class="tab-content hidden">
-    <div class="mb-4 no-print">
-      <label class="inline-block font-bold ms-2">📍 اختر الموقع:</label>
-      <select id="fms36LocationSelect" class="w-full md:w-2/3 text-lg p-3 border-2">
-        <option value="or">🏥 العمليات والإفاقة (Operating & Recovery) - 20-24°C | 30-60%</option>
-        <option value="nursery">👶 الحضانة (Nursery) - 20-24°C | 30-60%</option>
-        <option value="ccu">❤️ الرعاية الحرجة (Critical Care) - 20-24°C | 30-60%</option>
-        <option value="sterile">📦 تخزين المواد المعقمة (Sterile Storage) - 20-24°C | 30-60%</option>
-        <option value="inpatient">🛏️ غرف المرضى (Inpatient Rooms) - 20-24°C | 30-60%</option>
-      </select>
+        <!-- Volume -->
+        <div class="cpanel" id="cp-vol">
+          <div class="cpanel-inputs">
+            <div class="fg3" style="gap:8px">
+              <div class="ff">
+                <label class="fl"><span data-ar="الطول L" data-en="Length L">الطول L (م)</span></label>
+                <input type="number" id="c-l" class="fi" placeholder="L" step="0.1" oninput="doVol()">
+              </div>
+              <div class="ff">
+                <label class="fl"><span data-ar="العرض W" data-en="Width W">العرض W (م)</span></label>
+                <input type="number" id="c-w" class="fi" placeholder="W" step="0.1" oninput="doVol()">
+              </div>
+              <div class="ff">
+                <label class="fl"><span data-ar="الارتفاع H" data-en="Height H">الارتفاع H (م)</span></label>
+                <input type="number" id="c-h" class="fi" placeholder="H" step="0.1" oninput="doVol()">
+              </div>
+            </div>
+            <div class="fhint"><span class="cv">V</span> <span class="cp">=</span> <span class="cv">L</span> <span class="cp">×</span> <span class="cv">W</span> <span class="cp">×</span> <span class="cv">H</span><br><span class="cc">// all dimensions in meters</span></div>
+          </div>
+          <div class="cresult">
+            <div class="cresult-lbl">Room Volume</div>
+            <div class="cresult-val" id="r-vol">—</div>
+            <div class="cresult-unit">m³</div>
+            <div class="cresult-detail" id="d-vol"></div>
+          </div>
+        </div>
+      </div><!-- /ecalc-body -->
     </div>
 
-    <!-- نموذج FMS.36 الديناميكي -->
-    <div id="fms36DynamicForm" class="card mb-6"></div>
+    <!-- Reference cards grid -->
+    <div class="ref-grid">
 
-    <!-- جدول سجلات FMS.36 -->
-    <div class="card no-print">
-      <div class="flex justify-between items-center mb-3">
-        <h3 class="text-xl font-bold">📋 سجلات FMS.36 المحفوظة</h3>
-        <div class="flex gap-2">
-          <button id="exportFms36Csv" class="btn-outline"><i class="fas fa-file-csv"></i> CSV</button>
-          <button id="printFms36Table" class="btn-outline"><i class="fas fa-print"></i> طباعة</button>
+      <!-- Formulas -->
+      <div class="rcard">
+        <div class="rcard-hdr">
+          <div class="rcard-hdr-icon"><i class="fas fa-square-root-alt"></i></div>
+          <div class="rcard-hdr-title" data-ar="المعادلات الهندسية الأساسية" data-en="Core Engineering Formulas">المعادلات الهندسية الأساسية</div>
+        </div>
+        <div class="rcard-body">
+          <p style="font-size:10px;color:var(--text-3);font-family:var(--f-mono);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px" data-ar="معادلة 1 — تغييرات الهواء في الساعة" data-en="Formula 1 — Air Changes per Hour">معادلة 1 — تغييرات الهواء في الساعة</p>
+          <div class="code-block"><span class="cv">ACH</span> <span class="cp">=</span> <span class="cv">Q</span> <span class="cp">/</span> <span class="cv">V</span>
+<span class="cc">Q</span> <span class="cc">= Supply Airflow Rate (m³/h)</span>
+<span class="cc">V</span> <span class="cc">= Room Volume (m³) = L × W × H</span></div>
+          <p style="font-size:10px;color:var(--text-3);font-family:var(--f-mono);margin:12px 0 6px;text-transform:uppercase;letter-spacing:.5px" data-ar="معادلة 2 — التدفق من السرعة" data-en="Formula 2 — Airflow from Velocity">معادلة 2 — التدفق من السرعة</p>
+          <div class="code-block"><span class="cv">Q</span> <span class="cp">=</span> <span class="cv">A</span> <span class="cp">×</span> <span class="cv">v</span> <span class="cp">×</span> <span class="cn">3600</span>
+<span class="cc">A</span> <span class="cc">= Diffuser Free Area (m²)</span>
+<span class="cc">v</span> <span class="cc">= Measured Air Velocity (m/s)</span></div>
+          <p style="font-size:10px;color:var(--text-3);font-family:var(--f-mono);margin:12px 0 6px;text-transform:uppercase;letter-spacing:.5px" data-ar="معادلة 3 — فرق الضغط" data-en="Formula 3 — Pressure Differential">معادلة 3 — فرق الضغط</p>
+          <div class="code-block"><span class="cv">ΔP</span> <span class="cp">=</span> <span class="cn">0.5</span> <span class="cp">×</span> <span class="cv">ρ</span> <span class="cp">×</span> <span class="cv">v²</span>
+<span class="cv">ρ</span> <span class="cp">=</span> <span class="cn">1.2</span> <span class="cc">kg/m³  (Standard Air Density)</span>
+<span class="cc">v</span> <span class="cc">= Air Velocity (m/s)</span></div>
         </div>
       </div>
-      <div class="overflow-auto max-h-96">
-        <table id="fms36MainTable">
-          <thead><tr><th>التاريخ</th><th>الموقع</th><th>عدد النقاط</th><th>الحالة</th><th>توقيع</th></tr></thead>
-          <tbody></tbody>
-        </table>
+
+      <!-- ACH Reference -->
+      <div class="rcard">
+        <div class="rcard-hdr">
+          <div class="rcard-hdr-icon"><i class="fas fa-book-open"></i></div>
+          <div class="rcard-hdr-title" data-ar="قيم ACH المرجعية — ASHRAE 170" data-en="Reference ACH Values — ASHRAE 170">قيم ACH المرجعية — ASHRAE 170</div>
+        </div>
+        <div class="rcard-body">
+          <table class="rtable">
+            <thead><tr><th data-ar="نوع الغرفة" data-en="Room Type">نوع الغرفة</th><th data-ar="الحد الأدنى" data-en="Min ACH">Min ACH</th></tr></thead>
+            <tbody>
+              <tr><td>Operating Room</td><td style="color:var(--teal);font-family:var(--f-mono);font-weight:700">≥ 20</td></tr>
+              <tr><td>Labor &amp; Delivery</td><td style="color:var(--teal);font-family:var(--f-mono);font-weight:700">≥ 15</td></tr>
+              <tr><td>Isolation Room (Neg.)</td><td style="color:var(--teal);font-family:var(--f-mono);font-weight:700">≥ 12</td></tr>
+              <tr><td>Critical Care Unit</td><td style="color:var(--teal);font-family:var(--f-mono);font-weight:700">≥ 12</td></tr>
+              <tr><td>Laboratory</td><td style="color:var(--teal);font-family:var(--f-mono);font-weight:700">≥ 12</td></tr>
+              <tr><td>Sterilization Dept.</td><td style="color:var(--teal);font-family:var(--f-mono);font-weight:700">≥ 15</td></tr>
+              <tr><td>Utility Rooms</td><td style="color:var(--teal);font-family:var(--f-mono);font-weight:700">≥ 10</td></tr>
+            </tbody>
+          </table>
+          <table class="rtable" style="margin-top:14px">
+            <thead><tr><th data-ar="نوع الضغط" data-en="Pressure Type">Pressure Type</th><th data-ar="النطاق (Pa)" data-en="Range (Pa)">Range (Pa)</th><th>Ref.</th></tr></thead>
+            <tbody>
+              <tr><td>Positive Pressure</td><td style="color:var(--emerald);font-family:var(--f-mono);font-weight:700">+2.5 to +6</td><td style="color:var(--text-3);font-size:10px">ASHRAE 170</td></tr>
+              <tr><td>Negative Pressure</td><td style="color:var(--crimson);font-family:var(--f-mono);font-weight:700">-2.5 to -16</td><td style="color:var(--text-3);font-size:10px">ASHRAE 170</td></tr>
+            </tbody>
+          </table>
+          <div class="note-strip"><i class="fas fa-info-circle"></i><span style="font-size:10.5px">In accordance with ASHRAE Standard 170-2021, positive pressure shall be maintained at a minimum of +2.5 Pa. The facility adopts <strong>2.5 – 6 Pa</strong> as its operational benchmark.</span></div>
+        </div>
+      </div>
+
+      <!-- Temp & Humidity Ref -->
+      <div class="rcard">
+        <div class="rcard-hdr">
+          <div class="rcard-hdr-icon"><i class="fas fa-thermometer-half"></i></div>
+          <div class="rcard-hdr-title" data-ar="مرجع FMS.36 — الحرارة والرطوبة" data-en="FMS.36 Reference — Temp & Humidity">مرجع FMS.36 — الحرارة والرطوبة</div>
+        </div>
+        <div class="rcard-body">
+          <table class="rtable">
+            <thead><tr><th data-ar="المعامل" data-en="Parameter">Parameter</th><th data-ar="النطاق المقبول" data-en="Range">Range</th></tr></thead>
+            <tbody>
+              <tr><td><i class="fas fa-temperature-high" style="color:var(--crimson);margin-inline-end:6px"></i>Temperature</td><td style="color:var(--gold);font-family:var(--f-mono);font-weight:700">20 – 24 °C</td></tr>
+              <tr><td><i class="fas fa-tint" style="color:var(--sky);margin-inline-end:6px"></i>Humidity</td><td style="color:var(--sky);font-family:var(--f-mono);font-weight:700">30 – 60 %</td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:14px">
+            <p style="font-size:10px;color:var(--text-3);font-family:var(--f-mono);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px" data-ar="المواقع المعنية" data-en="Applicable Locations">المواقع المعنية</p>
+            <div style="display:flex;flex-direction:column;gap:5px;font-size:12px">
+              <div style="color:var(--text-2)"><span style="color:var(--teal);margin-inline-end:7px">▸</span>Operating &amp; Recovery Room(s)</div>
+              <div style="color:var(--text-2)"><span style="color:var(--teal);margin-inline-end:7px">▸</span>Nursery</div>
+              <div style="color:var(--text-2)"><span style="color:var(--teal);margin-inline-end:7px">▸</span>Critical Care Unit(s)</div>
+              <div style="color:var(--text-2)"><span style="color:var(--teal);margin-inline-end:7px">▸</span>Sterile Storage Supply</div>
+              <div style="color:var(--text-2)"><span style="color:var(--teal);margin-inline-end:7px">▸</span>Inpatient Rooms</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FMS.35 Quick Ref -->
+      <div class="rcard">
+        <div class="rcard-hdr">
+          <div class="rcard-hdr-icon"><i class="fas fa-map-marker-alt"></i></div>
+          <div class="rcard-hdr-title" data-ar="مواقع FMS.35 — ملخص المتطلبات" data-en="FMS.35 Locations — Requirements Summary">مواقع FMS.35 — ملخص المتطلبات</div>
+        </div>
+        <div class="rcard-body">
+          <table class="rtable" style="font-size:10.5px">
+            <thead><tr><th>#</th><th data-ar="الموقع" data-en="Location">Location</th><th>Flow</th><th>ACH</th><th>Pa</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--text-4)">1</td><td>Operating Room</td><td style="color:var(--emerald)">POS</td><td style="font-family:var(--f-mono)">≥20</td><td style="font-family:var(--f-mono);font-size:9px">+2.5/+6</td></tr>
+              <tr><td style="color:var(--text-4)">2</td><td>Labor &amp; Delivery</td><td style="color:var(--emerald)">POS</td><td style="font-family:var(--f-mono)">≥15</td><td style="font-family:var(--f-mono);font-size:9px">+2.5/+6</td></tr>
+              <tr><td style="color:var(--text-4)">3</td><td>Isolation Room</td><td style="color:var(--crimson)">NEG</td><td style="font-family:var(--f-mono)">≥12</td><td style="font-family:var(--f-mono);font-size:9px">-2.5/-16</td></tr>
+              <tr><td style="color:var(--text-4)">4</td><td>Critical Care Unit</td><td style="color:var(--emerald)">POS</td><td style="font-family:var(--f-mono)">≥12</td><td style="font-family:var(--f-mono);font-size:9px">+2.5/+6</td></tr>
+              <tr><td style="color:var(--text-4)">5</td><td>Clean/Dirty Utility</td><td style="color:var(--amber)">MIX</td><td style="font-family:var(--f-mono)">≥12</td><td style="font-family:var(--f-mono);font-size:9px">±</td></tr>
+              <tr><td style="color:var(--text-4)">6</td><td>Janitorial Closet</td><td style="color:var(--crimson)">NEG</td><td style="font-family:var(--f-mono)">≥10</td><td style="font-family:var(--f-mono);font-size:9px">-2.5/-16</td></tr>
+              <tr><td style="color:var(--text-4)">7</td><td>Laboratory</td><td style="color:var(--crimson)">NEG</td><td style="font-family:var(--f-mono)">≥12</td><td style="font-family:var(--f-mono);font-size:9px">-2.5/-16</td></tr>
+              <tr><td style="color:var(--text-4)">8</td><td>Triage &amp; Trauma</td><td style="color:var(--emerald)">POS</td><td style="font-family:var(--f-mono)">≥12</td><td style="font-family:var(--f-mono);font-size:9px">+2.5/+6</td></tr>
+              <tr><td style="color:var(--text-4)">9</td><td>Central Sterilization</td><td style="color:var(--emerald)">POS</td><td style="font-family:var(--f-mono)">≥15</td><td style="font-family:var(--f-mono);font-size:9px">+2.5/+6</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div><!-- /ref-grid -->
+
+    <!-- Action Protocols -->
+    <div class="sec-hdr">
+      <div class="sec-title" data-ar="بروتوكول الإجراءات عند المخالفة" data-en="Action Protocol upon Non-Compliance">بروتوكول الإجراءات عند المخالفة</div>
+    </div>
+    <div class="proto-grid">
+      <div class="proto-card ph">
+        <div class="proto-pri">🔴 <span data-ar="أولوية عالية" data-en="High Priority">أولوية عالية</span></div>
+        <div class="proto-action" data-ar="فتح أمر شغل (Work Order)" data-en="Open Work Order">فتح أمر شغل (Work Order)</div>
+        <div class="proto-dept"><i class="fas fa-tools" style="margin-inline-end:5px;color:var(--crimson)"></i>Utilities &amp; Maintenance (U&amp;M)</div>
+      </div>
+      <div class="proto-card ph">
+        <div class="proto-pri">🔴 <span data-ar="أولوية عالية" data-en="High Priority">أولوية عالية</span></div>
+        <div class="proto-action" data-ar="إخطار مكافحة العدوى" data-en="Notify Infection Prevention">إخطار مكافحة العدوى</div>
+        <div class="proto-dept"><i class="fas fa-shield-virus" style="margin-inline-end:5px;color:var(--crimson)"></i>Infection Prevention &amp; Control (IPC)</div>
+      </div>
+      <div class="proto-card pm">
+        <div class="proto-pri">🟠 <span data-ar="أولوية متوسطة" data-en="Medium Priority">أولوية متوسطة</span></div>
+        <div class="proto-action" data-ar="إعادة الفحص خلال 24 ساعة" data-en="Re-inspect within 24 hours">إعادة الفحص خلال 24 ساعة</div>
+        <div class="proto-dept"><i class="fas fa-hard-hat" style="margin-inline-end:5px;color:var(--amber)"></i>Engineering Services</div>
+      </div>
+      <div class="proto-card pl">
+        <div class="proto-pri">🟡 <span data-ar="أولوية منخفضة" data-en="Low Priority">أولوية منخفضة</span></div>
+        <div class="proto-action" data-ar="تسجيل المخالفة – نظام الجودة" data-en="Log in Quality System">تسجيل المخالفة – نظام الجودة</div>
+        <div class="proto-dept"><i class="fas fa-clipboard-check" style="margin-inline-end:5px;color:var(--emerald)"></i>Quality Department</div>
       </div>
     </div>
-  </div>
 
-  <!-- ########################################### تبويب المراجع ########################################### -->
-  <div id="tab-reference" class="tab-content hidden">
-    <div class="grid lg:grid-cols-2 gap-6">
-      <div class="card">
-        <h3 class="section-title"><i class="fas fa-calculator"></i> الحاسبة الهندسية التفاعلية</h3>
-        <div class="space-y-5">
-          <div><label>ACH = Q / V (طريقة m³/h)</label><div class="flex gap-2"><input type="number" id="calcQ" placeholder="Q (m³/h)"><input type="number" id="calcV" placeholder="V (m³)"></div><button id="calcAchBtn" class="btn-primary mt-2 w-full">احسب ACH</button><span id="achResult" class="font-bold block mt-2 text-center"></span></div>
-          <div><label>ACH من CFM والأبعاد (بالمتر)</label><input id="calcCfm" placeholder="CFM (ft³/min)"><div class="grid grid-cols-3 gap-2"><input id="calcLen" placeholder="طول (م)"><input id="calcWid" placeholder="عرض (م)"><input id="calcHei" placeholder="ارتفاع (م)"></div><button id="calcCfmAch" class="btn-primary mt-2 w-full">احسب ACH</button><div class="text-sm mt-2 text-center">الحجم: <span id="volM3">-</span> م³ | <span id="volFt">-</span> ft³<br>ACH = <span id="cfmAchResult" class="font-bold">-</span></div></div>
-          <div class="grid grid-cols-2 gap-2"><div><label>Q = A × v × 3600</label><input id="areaA" placeholder="A (m²)"><input id="velV" placeholder="v (m/s)"><button id="calcQfromV" class="btn-primary w-full">احسب Q</button><span id="qResult" class="block text-center mt-1"></span></div><div><label>ΔP = 0.5×ρ×v²</label><input id="pressV" placeholder="v (m/s)"><button id="calcDeltaP" class="btn-primary w-full">احسب ΔP</button><span id="deltaPResult" class="block text-center mt-1"></span></div></div>
-          <div><label>تحويل الوحدات</label><input id="unitInput" placeholder="القيمة"><button id="convertUnits" class="btn-outline w-full mt-2">تحويل m²→ft² / m³→ft³</button><span id="unitResult" class="block text-center mt-1"></span></div>
-        </div>
+    <div class="note-strip" style="background:rgba(255,71,87,.07);border-color:rgba(255,71,87,.25);color:#E87070">
+      <i class="fas fa-exclamation-triangle" style="color:var(--crimson)"></i>
+      <div>
+        <strong data-ar="إجراءات خاصة — غرف العزل:" data-en="Special Protocol — Isolation Rooms:">إجراءات خاصة — غرف العزل:</strong><br>
+        <span style="font-size:10.5px" data-ar="• فحص الضغط السلبي أسبوعياً  • إذا كان يوجد مريض: الفحص يومياً  • أي انخفاض عن -2.5 Pa → إخطار IPC فوراً" data-en="• Weekly negative pressure check  • If patient present: daily check required  • Any drop below -2.5 Pa → notify IPC immediately">• فحص الضغط السلبي أسبوعياً  • إذا كان يوجد مريض: الفحص يومياً  • أي انخفاض عن -2.5 Pa → إخطار IPC فوراً</span>
       </div>
-      <div class="card">
-        <h3 class="section-title">📚 المراجع والمعايير</h3>
-        <div class="space-y-4">
-          <div class="bg-blue-50 p-4 rounded"><h4 class="font-bold">ASHRAE 170-2021</h4><p>غرف العمليات ACH≥20, ضغط +2.5~+6 | غرف العزل ACH≥12, ضغط -2.5~-16</p></div>
-          <div><h4 class="font-bold">📋 بروتوكول المخالفة</h4><ul class="list-disc list-inside"><li>🔴 فتح أمر شغل (U&M)</li><li>🔴 إخطار IPC فوراً</li><li>🟠 إعادة الفحص خلال 24 ساعة</li><li>🟡 تسجيل في نظام الجودة</li></ul></div>
-          <div class="bg-gray-50 p-4 rounded"><i class="fas fa-flask"></i> <strong>معادلة التحويل:</strong> 1 m³ = 35.3147 ft³ | ACH = (CFM × 60) / V(ft³)</div>
-        </div>
+    </div>
+  </div><!-- /ref -->
+
+</div><!-- /main -->
+
+<!-- ══════════════════════════════════════
+     ALERT OVERLAY
+══════════════════════════════════════ -->
+<div id="alert-overlay" onclick="closeAlert(event)">
+  <div id="alert-box">
+    <div class="alert-head">
+      <span class="alert-head-icon"><i class="fas fa-radiation-alt"></i></span>
+      <span class="alert-head-title" data-ar="🚨 تنبيه — عدم امتثال مكتشف" data-en="🚨 ALERT — Non-Compliance Detected">🚨 تنبيه — عدم امتثال مكتشف</span>
+      <button class="alert-close-btn" onclick="closeAlert()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="alert-body">
+      <div class="alert-loc" id="alertLoc"></div>
+      <div class="alert-param-box" id="alertParam"></div>
+      <div class="alert-actions-list">
+        <div class="alert-ai"><span class="pri-dot pri-h"></span><span data-ar="فتح Work Order إلى U&amp;M فوراً" data-en="Open Work Order to U&amp;M immediately">فتح Work Order إلى U&amp;M فوراً</span></div>
+        <div class="alert-ai"><span class="pri-dot pri-h"></span><span data-ar="إخطار Infection Prevention &amp; Control (IPC)" data-en="Notify Infection Prevention &amp; Control (IPC)">إخطار Infection Prevention &amp; Control (IPC)</span></div>
+        <div class="alert-ai"><span class="pri-dot pri-m"></span><span data-ar="جدولة إعادة الفحص خلال 24 ساعة" data-en="Schedule re-inspection within 24 hours">جدولة إعادة الفحص خلال 24 ساعة</span></div>
+        <div class="alert-ai"><span class="pri-dot pri-l"></span><span data-ar="تسجيل المخالفة في نظام الجودة" data-en="Log non-compliance in Quality System">تسجيل المخالفة في نظام الجودة</span></div>
       </div>
     </div>
   </div>
 </div>
 
+<!-- Snackbar -->
+<div id="snack"></div>
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════ -->
 <script>
-  (function(){
-    // بيانات التخزين
-    let fms35Records = JSON.parse(localStorage.getItem('fms35Records')) || [];
-    let fms36Records = JSON.parse(localStorage.getItem('fms36Records')) || [];
+/* ──────────────────────────────────────────────────────────────
+   DATA
+────────────────────────────────────────────────────────────── */
+const LOCS35 = [
+  {id:'or',  en:'Operating Room(s)',       ar:'غرف العمليات',                flow:'Positive', minACH:20, pMin:2.5,  pMax:6,   special:false},
+  {id:'ld',  en:'Labor and Delivery',      ar:'غرف الولادة',                 flow:'Positive', minACH:15, pMin:2.5,  pMax:6,   special:false},
+  {id:'ir',  en:'Isolation Room(s)',       ar:'غرف العزل',                   flow:'Negative', minACH:12, pMin:-16,  pMax:-2.5,special:true},
+  {id:'ccu', en:'Critical Care Unit(s)',   ar:'وحدات الرعاية الحرجة',        flow:'Positive', minACH:12, pMin:2.5,  pMax:6,   special:false},
+  {id:'cu',  en:'Clean & Dirty Utility',   ar:'التخزين النظيف والمتسخ',      flow:'Mixed',    minACH:12, pMin:-16,  pMax:6,   special:false},
+  {id:'jc',  en:'Janitorial Closet',       ar:'غرفة عامل النظافة',           flow:'Negative', minACH:10, pMin:-16,  pMax:-2.5,special:false},
+  {id:'lab', en:'Laboratory',              ar:'المختبر',                     flow:'Negative', minACH:12, pMin:-16,  pMax:-2.5,special:false},
+  {id:'tt',  en:'Triage & Trauma',         ar:'الفرز واستقبال الحوادث',      flow:'Positive', minACH:12, pMin:2.5,  pMax:6,   special:false},
+  {id:'cs',  en:'Central Sterilization',   ar:'التعقيم والإمداد المركزي',    flow:'Positive', minACH:15, pMin:2.5,  pMax:6,   special:false}
+];
 
-    // تكوين المواقع FMS.35
-    const fms35Config = {
-      or:  { name:'غرف العمليات', en:'Operating Room', ach:20, press:'+2.5 ~ +6', flow:'positive', type:'standard', color:'blue' },
-      ld:  { name:'غرف الولادة', en:'Labor & Delivery', ach:15, press:'+2.5 ~ +6', flow:'positive', type:'standard' },
-      iso: { name:'غرف العزل', en:'Isolation Rooms', ach:12, press:'-2.5 ~ -16', flow:'negative', type:'isolation', color:'red' },
-      ccu: { name:'الرعاية الحرجة', en:'Critical Care', ach:12, press:'+2.5 ~ +6', flow:'positive', type:'standard' },
-      clean:{ name:'التخزين النظيف', en:'Clean Utility', ach:12, press:'+2.5 ~ +6', flow:'positive', type:'standard' },
-      dirty:{ name:'التخزين المتسخ', en:'Dirty Utility', ach:12, press:'-2.5 ~ -16', flow:'negative', type:'standard' },
-      jan: { name:'غرفة عامل النظافة', en:'Janitorial', ach:10, press:'-2.5 ~ -16', flow:'negative', type:'standard' },
-      lab: { name:'المختبر', en:'Laboratory', ach:12, press:'-2.5 ~ -16', flow:'negative', type:'standard' },
-      triage:{ name:'الفرز والحوادث', en:'Triage', ach:12, press:'+2.5 ~ +6', flow:'positive', type:'standard' },
-      sterile:{ name:'التعقيم المركزي', en:'Central Sterilization', ach:15, press:'+2.5 ~ +6', flow:'positive', type:'standard' }
-    };
-    const fms36Config = {
-      or: 'العمليات والإفاقة', nursery: 'الحضانة', ccu: 'الرعاية الحرجة', sterile: 'تخزين المواد المعقمة', inpatient: 'غرف المرضى'
-    };
+const LOCS36 = [
+  {id:'or2', en:'Operating & Recovery Room(s)', ar:'العمليات والإفاقة'},
+  {id:'nur', en:'Nursery',                       ar:'الحضانة'},
+  {id:'ccu2',en:'Critical Care Unit(s)',          ar:'الرعاية الحرجة'},
+  {id:'sts', en:'Sterile Storage Supply',         ar:'تخزين المواد المعقمة'},
+  {id:'inp', en:'Inpatient Rooms',                ar:'غرف المرضى'}
+];
 
-    // تحديث KPIs
-    function updateKPIs(){
-      const total = fms35Records.length + fms36Records.length;
-      const compliant = [...fms35Records, ...fms36Records].filter(r=>r.status==='متوافق').length;
-      const non = total - compliant;
-      const pct = total ? Math.round((compliant/total)*100) : 100;
-      document.getElementById('overallCompliance').innerText = pct+'%';
-      document.getElementById('complianceBar').style.width = pct+'%';
-      document.getElementById('totalRecords').innerText = total;
-      document.getElementById('compliantCount').innerText = compliant;
-      document.getElementById('nonCompliantCount').innerText = non;
-    }
+let R35 = [], R36 = [];
+let isLTR = false;
 
-    function renderFms35Table(){
-      const tbody = document.querySelector('#fms35MainTable tbody');
-      tbody.innerHTML = '';
-      fms35Records.forEach((r,i)=>{
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${r.date}</td><td>${r.location}</td><td>${r.roomCount || '-'}</td><td>${r.status==='متوافق'?'✅':'❌'}</td><td>${r.signature||'-'}</td>
-          <td><button onclick="deleteFms35Record(${i})" class="text-red-500"><i class="fas fa-trash"></i></button></td>`;
-        tbody.appendChild(tr);
-      });
-      localStorage.setItem('fms35Records', JSON.stringify(fms35Records));
-      updateKPIs();
-    }
-    window.deleteFms35Record = (i) => { fms35Records.splice(i,1); renderFms35Table(); };
+/* ──────────────────────────────────────────────────────────────
+   BOOT
+────────────────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  loadStorage();
+  buildForms35();
+  buildForms36();
+  renderTable35();
+  renderTable36();
+  refreshKPIs();
+  setDateTime();
+  updateTodayLabel();
+  setInterval(updateTodayLabel, 60000);
+});
 
-    function renderFms36Table(){
-      const tbody = document.querySelector('#fms36MainTable tbody');
-      tbody.innerHTML = '';
-      fms36Records.forEach((r,i)=>{
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${r.date}</td><td>${r.location}</td><td>${r.pointCount||1}</td><td>${r.status==='متوافق'?'✅':'❌'}</td><td>${r.signature||'-'}</td>`;
-        tbody.appendChild(tr);
-      });
-      localStorage.setItem('fms36Records', JSON.stringify(fms36Records));
-      updateKPIs();
-    }
+function updateTodayLabel() {
+  const el = document.getElementById('todayLabel');
+  if (el) el.textContent = new Date().toLocaleDateString(isLTR ? 'en-GB' : 'ar-SA', {weekday:'short',year:'numeric',month:'short',day:'numeric'});
+}
 
-    function showNotification(loc,val,range){
-      document.getElementById('notifLoc').innerText = loc;
-      document.getElementById('notifVal').innerText = val;
-      document.getElementById('notifRange').innerText = range;
-      document.getElementById('actionNotification').classList.remove('hidden');
-    }
+function setDateTime() {
+  const today = new Date().toISOString().split('T')[0];
+  const now   = new Date().toTimeString().slice(0,5);
+  document.querySelectorAll('.adate').forEach(el => el.value = today);
+  document.querySelectorAll('.atime').forEach(el => el.value = now);
+}
 
-    // بناء نموذج FMS.35 الديناميكي
-    function buildFms35Form(locKey){
-      const cfg = fms35Config[locKey];
-      const isIsolation = (locKey === 'iso');
-      const container = document.getElementById('fms35DynamicForm');
-      const flowText = cfg.flow === 'positive' ? 'موجب' : 'سالب';
-      
-      let html = `
-        <div class="flex justify-between items-center mb-4">
-          <div><h3 class="text-2xl font-bold">${isIsolation ? '🚫' : '📍'} ${cfg.name} – ${cfg.en}</h3>
-          <p class="text-gray-600">🎯 ${flowText} | ACH ≥${cfg.ach} | الضغط ${cfg.press} Pa | ASHRAE 170</p></div>
-          <span class="bg-${cfg.color||'blue'}-100 px-4 py-1 rounded-full text-sm">${isIsolation?'سجل أسبوعي':'سجل يومي'}</span>
+/* ──────────────────────────────────────────────────────────────
+   BUILD FMS.35 FORMS
+────────────────────────────────────────────────────────────── */
+function buildForms35() {
+  const g = document.getElementById('grid35');
+  g.innerHTML = '';
+  LOCS35.forEach(loc => {
+    const flowChip = loc.flow === 'Positive'
+      ? `<span class="chip chip-pos"><i class="fas fa-arrow-up"></i>&nbsp;Positive</span>`
+      : loc.flow === 'Negative'
+      ? `<span class="chip chip-neg"><i class="fas fa-arrow-down"></i>&nbsp;Negative</span>`
+      : `<span class="chip chip-mix"><i class="fas fa-arrows-alt-v"></i>&nbsp;Mixed</span>`;
+
+    const pRange = loc.flow === 'Positive' ? '+2.5 to +6 Pa'
+      : loc.flow === 'Negative' ? '-2.5 to -16 Pa' : '±';
+
+    g.innerHTML += `
+<div class="lcard" id="lc35-${loc.id}">
+  <div class="lcard-head">
+    <div class="lcard-titles">
+      <div class="lcard-en">${loc.en}</div>
+      <div class="lcard-ar">${loc.ar}</div>
+    </div>
+    <div class="lcard-tags">
+      ${flowChip}
+      <span class="chip chip-ach">ACH ≥ ${loc.minACH}</span>
+      ${loc.special ? '<span class="chip chip-spl"><i class="fas fa-exclamation"></i>&nbsp;SPECIAL</span>' : ''}
+    </div>
+  </div>
+  <div class="lcard-body">
+    <div class="fg2">
+      <div class="ff">
+        <label class="fl"><i class="fas fa-calendar-day"></i><span data-ar="التاريخ" data-en="Date">التاريخ</span></label>
+        <input type="date" id="f35-${loc.id}-date" class="fi adate">
+      </div>
+      <div class="ff">
+        <label class="fl"><i class="fas fa-clock"></i><span data-ar="الوقت" data-en="Time">الوقت</span></label>
+        <input type="time" id="f35-${loc.id}-time" class="fi atime">
+      </div>
+      <div class="ff fgf">
+        <label class="fl"><i class="fas fa-user-cog"></i><span data-ar="اسم المسؤول" data-en="Inspector Name">اسم المسؤول</span></label>
+        <input type="text" id="f35-${loc.id}-resp" class="fi" placeholder="أدخل الاسم">
+      </div>
+    </div>
+
+    <div class="hline"></div>
+
+    <div class="fg2">
+      <div class="ff">
+        <label class="fl"><i class="fas fa-compress-arrows-alt"></i><span data-ar="الضغط التفاضلي (Pa)" data-en="Pressure Diff. (Pa)">الضغط (Pa)</span></label>
+        <input type="number" id="f35-${loc.id}-pres" class="fi" step="0.1" placeholder="${pRange}" oninput="chk35('${loc.id}')">
+        <div id="fs35-${loc.id}-pres" class="fistatus idle"><i class="fas fa-minus-circle"></i>&nbsp;${pRange}</div>
+      </div>
+      <div class="ff">
+        <label class="fl"><i class="fas fa-directions"></i><span data-ar="اتجاه الهواء" data-en="Airflow Direction">اتجاه الهواء</span></label>
+        <select id="f35-${loc.id}-dir" class="fi" onchange="chk35('${loc.id}')">
+          <option value="">— اختر —</option>
+          <option value="Positive">Positive (موجب)</option>
+          <option value="Negative">Negative (سالب)</option>
+          <option value="Balanced">Balanced (متزن)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="ff" style="margin-top:12px">
+      <label class="fl"><i class="fas fa-recycle"></i><span data-ar="تغييرات الهواء / ساعة (ACH)" data-en="Air Changes per Hour (ACH)">ACH</span></label>
+      <input type="number" id="f35-${loc.id}-ach" class="fi" step="0.1" placeholder="الحد الأدنى: ${loc.minACH}" oninput="chk35('${loc.id}')">
+      <div id="fs35-${loc.id}-ach" class="fistatus idle"><i class="fas fa-minus-circle"></i>&nbsp;Min: ${loc.minACH}</div>
+    </div>
+
+    <!-- Auto Calc section -->
+    <div class="calc-sub">
+      <div class="calc-sub-title"><i class="fas fa-calculator" style="color:var(--teal)"></i><span data-ar="حساب ACH تلقائياً من Q و V" data-en="Auto-calc ACH from Q & V">حساب ACH تلقائياً</span></div>
+      <div class="fg3">
+        <div class="ff">
+          <label class="fl">Q (م³/h)</label>
+          <input type="number" id="f35-${loc.id}-q" class="fi" placeholder="تدفق">
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div><label>📅 التاريخ</label><input type="date" id="formDate"></div><div><label>⏰ الوقت</label><input type="time" id="formTime"></div>
-          <div><label>👤 المهندس المسؤول</label><input id="formEng"></div><div><label>🏥 القسم/الوحدة</label><input id="formDept" placeholder="مثال: الطابق الثاني"></div>
-      `;
-      if(isIsolation){
-        html += `<div><label>عدد أسرة المستشفى</label><input type="number" id="isoBeds" value="350"></div><div><label>عدد غرف العزل</label><input type="number" id="isoTotal" value="8"></div>
-        <div><label>غرف عاملة</label><input type="number" id="isoWorking" value="7"></div><div><label>غير عاملة</label><input id="isoNotWorking" value="1"></div>
-        <div><label>رقم الأسبوع</label><input type="number" id="isoWeek" value="15"></div>`;
-      }
-      html += `</div><hr class="my-4"><h4 class="font-bold text-lg mb-2">📊 جدول ${isIsolation ? 'الغرف' : 'نقاط القياس'}</h4>
-        <div class="overflow-auto"><table id="dynamicRoomsTable"><thead><tr>
-          ${isIsolation ? '<th>رقم الغرفة</th><th>القسم</th><th>طابق</th><th>°C</th><th>رطوبة%</th><th>ACH</th><th>ضغط Pa</th><th>حذف</th>' : '<th>رقم/اسم النقطة</th><th>الموقع الفرعي</th><th>ACH</th><th>الضغط (Pa)</th><th>CFM</th><th>حجم m³</th><th>حذف</th>'}
-        </tr></thead><tbody id="dynamicRowsBody"></tbody></table></div>
-        <div class="flex gap-3 mt-3"><button id="addDynamicRow" class="btn-outline"><i class="fas fa-plus"></i> إضافة ${isIsolation?'غرفة':'نقطة'}</button>
-        <button id="removeDynamicRow" class="btn-outline"><i class="fas fa-trash"></i> حذف آخر</button></div>
-        <div class="grid md:grid-cols-2 gap-4 mt-4">
-          ${isIsolation ? `<div><label>تاريخ تغيير فلتر HEPA</label><input type="date" id="isoHepa"></div><div><label>حالة التكييف</label><select id="isoAc"><option>يعمل بكفاءة</option><option>يعمل بصعوبة</option><option>لا يعمل</option></select></div>` : ''}
-          <div class="${isIsolation ? '' : 'md:col-span-2'}"><label>📝 ملاحظات عامة</label><textarea id="formNotes" rows="2"></textarea></div>
+        <div class="ff">
+          <label class="fl">L × W × H</label>
+          <div style="display:flex;gap:4px">
+            <input type="number" id="f35-${loc.id}-l" class="fi" placeholder="L" style="min-width:0">
+            <input type="number" id="f35-${loc.id}-w" class="fi" placeholder="W" style="min-width:0">
+            <input type="number" id="f35-${loc.id}-h" class="fi" placeholder="H" style="min-width:0">
+          </div>
         </div>
-        ${isIsolation ? `<div class="mt-4"><h4 class="font-bold">⚠️ سجل الأعطال</h4><table><tbody id="isoIssuesBody"></tbody></table><button id="addIsoIssue" class="btn-outline mt-2"><i class="fas fa-exclamation-triangle"></i> إضافة عطل</button></div>` : ''}
-        <div class="grid md:grid-cols-2 gap-4 mt-4">
-          <div><label>✍️ توقيع مهندس التكييف</label><input id="formSignEng"></div>
-          ${isIsolation ? '<div><label>🛡️ توقيع مكافحة العدوى</label><input id="formSignIpc"></div>' : ''}
+        <div class="ff" style="justify-content:flex-end">
+          <label class="fl" style="visibility:hidden">x</label>
+          <button class="abtn abtn-calc abtn-sm" onclick="autoACH('${loc.id}')"><i class="fas fa-calculator"></i><span data-ar="احسب ACH" data-en="Calc ACH">احسب ACH</span></button>
         </div>
-        <div class="mt-4 flex items-center gap-4"><span class="font-bold">حالة الامتثال:</span><span id="formOverallStatus" class="badge-compliant">✅ متوافق</span> <span id="complianceDetail" class="text-sm"></span></div>
-        <div class="flex flex-wrap gap-3 mt-5">
-          <button id="saveFormToMain" class="btn-primary"><i class="fas fa-save"></i> حفظ السجل في الجدول الرئيسي</button>
-          <button id="printCurrentForm" class="btn-outline"><i class="fas fa-print"></i> طباعة النموذج</button>
-          <button id="exportFormPdf" class="btn-outline"><i class="fas fa-file-pdf"></i> PDF</button>
-        </div>`;
-      container.innerHTML = html;
+      </div>
+      <div class="fg3" style="margin-top:8px">
+        <div class="ff">
+          <label class="fl">v (م/ث)</label>
+          <input type="number" id="f35-${loc.id}-vel" class="fi" placeholder="سرعة" step="0.01">
+        </div>
+        <div class="ff">
+          <label class="fl">A الفتحة (م²)</label>
+          <input type="number" id="f35-${loc.id}-area" class="fi" placeholder="مساحة" step="0.001">
+        </div>
+        <div class="ff" style="justify-content:flex-end">
+          <label class="fl" style="visibility:hidden">x</label>
+          <button class="abtn abtn-calc abtn-sm" onclick="autoQ('${loc.id}')"><i class="fas fa-wind"></i><span data-ar="احسب Q" data-en="Calc Q">احسب Q</span></button>
+        </div>
+      </div>
+    </div><!-- /calc-sub -->
 
-      // إضافة صفوف افتراضية
-      const tbody = document.getElementById('dynamicRowsBody');
-      function addRow(){
-        const tr = document.createElement('tr');
-        if(isIsolation){
-          tr.innerHTML = `<td><input value="غرفة ${tbody.children.length+1}" class="w-20"></td><td><select><option>ER</option><option>ICU</option><option>عزل سلبي</option><option>عزل إيجابي</option></select></td><td><input value="2"></td><td><input type="number" value="22.0"></td><td><input value="45"></td><td><input type="number" value="14"></td><td><input type="number" value="-4.5"></td><td><button class="btn-danger delete-row"><i class="fas fa-times"></i></button></td>`;
-        } else {
-          tr.innerHTML = `<td><input value="نقطة ${tbody.children.length+1}"></td><td><input value="غرفة"></td><td><input type="number" value="${cfg.ach}"></td><td><input type="number" value="${cfg.press.includes('+')?'3.5':'-4.0'}"></td><td><input value="250"></td><td><input value="45.0"></td><td><button class="btn-danger delete-row"><i class="fas fa-times"></i></button></td>`;
-        }
-        tbody.appendChild(tr);
-        tr.querySelector('.delete-row').addEventListener('click',()=>tr.remove());
-      }
-      for(let i=0; i<(isIsolation?3:1); i++) addRow();
-      document.getElementById('addDynamicRow').addEventListener('click', addRow);
-      document.getElementById('removeDynamicRow').addEventListener('click', ()=> tbody.lastChild?.remove());
-      if(isIsolation){
-        const issueBody = document.getElementById('isoIssuesBody');
-        document.getElementById('addIsoIssue').addEventListener('click',()=>{
-          const tr = document.createElement('tr');
-          tr.innerHTML = `<td><input placeholder="رقم"></td><td><select><option>ER</option></select></td><td><input placeholder="وصف العطل"></td><td><input placeholder="الإجراء"></td>`;
-          issueBody.appendChild(tr);
-        });
-      }
+    <div class="comp-row idle" id="cr35-${loc.id}">
+      <div class="comp-status-txt idle" id="ct35-${loc.id}">
+        <i class="fas fa-hourglass-half"></i>
+        <span data-ar="في انتظار القراءات..." data-en="Awaiting readings...">في انتظار القراءات...</span>
+      </div>
+    </div>
 
-      // حفظ السجل
-      document.getElementById('saveFormToMain').addEventListener('click', ()=>{
-        const rows = document.querySelectorAll('#dynamicRowsBody tr');
-        let compliant = true; let nonCount = 0;
-        rows.forEach(r=>{
-          const ach = parseFloat(r.cells[isIsolation?5:2].querySelector('input').value);
-          const press = parseFloat(r.cells[isIsolation?6:3].querySelector('input').value);
-          const pressOk = (cfg.flow==='positive') ? (press>=2.5 && press<=6) : (press>=-16 && press<=-2.5);
-          if(ach < cfg.ach || !pressOk) { compliant = false; nonCount++; }
-        });
-        const status = compliant ? 'متوافق' : 'غير متوافق';
-        const sign = document.getElementById('formSignEng').value;
-        fms35Records.push({
-          date: document.getElementById('formDate').value,
-          location: `${cfg.name} (${cfg.en})`,
-          roomCount: rows.length,
-          status, signature: sign
-        });
-        renderFms35Table();
-        if(!compliant) showNotification(cfg.name, `${nonCount} نقطة مخالفة`, `ACH≥${cfg.ach}, ضغط ${cfg.press}`);
-        else alert('✅ تم حفظ السجل بنجاح');
-      });
-      document.getElementById('printCurrentForm').addEventListener('click', ()=>{
-        const form = document.getElementById('fms35DynamicForm').cloneNode(true);
-        const win = window.open('','','width=900'); win.document.write(form.outerHTML); win.print();
-      });
-      document.getElementById('exportFormPdf').addEventListener('click', ()=>{
-        html2pdf().from(document.getElementById('fms35DynamicForm')).set({margin:0.3, filename:`${cfg.en}.pdf`}).save();
-      });
-    }
+    <div id="reason35-${loc.id}" style="display:none;margin-top:10px">
+      <div class="ff">
+        <label class="fl"><i class="fas fa-comment-medical" style="color:var(--crimson)"></i><span data-ar="سبب المخالفة" data-en="Reason for non-compliance">سبب المخالفة</span></label>
+        <textarea id="f35-${loc.id}-reason" class="fi" rows="2" placeholder="أدخل سبب المخالفة..."></textarea>
+      </div>
+    </div>
 
-    // بناء نموذج FMS.36
-    function buildFms36Form(key){
-      const name = fms36Config[key];
-      const container = document.getElementById('fms36DynamicForm');
-      container.innerHTML = `
-        <div class="flex justify-between"><h3 class="text-2xl font-bold">🌡️ ${name}</h3><span class="bg-green-100 px-3 py-1 rounded">20-24°C | 30-60%</span></div>
-        <div class="grid grid-cols-3 gap-3 mt-4"><div><label>التاريخ</label><input type="date" id="f36Date"></div><div><label>الوقت</label><input type="time" id="f36Time"></div><div><label>المسؤول</label><input id="f36Insp"></div></div>
-        <h4 class="font-bold mt-4">📊 نقاط القياس</h4>
-        <table><thead><tr><th>النقطة</th><th>الموقع</th><th>°C</th><th>رطوبة%</th><th>حذف</th></tr></thead><tbody id="f36RowsBody"></tbody></table>
-        <div class="flex gap-3 mt-2"><button id="addF36Row" class="btn-outline"><i class="fas fa-plus"></i> إضافة نقطة</button></div>
-        <div class="mt-4"><label>توقيع المهندس</label><input id="f36Sign"></div>
-        <div class="mt-4"><span class="font-bold">الحالة:</span><span id="f36Status" class="badge-compliant ms-2">✅ متوافق</span></div>
-        <div class="flex gap-3 mt-5"><button id="saveF36Record" class="btn-primary"><i class="fas fa-save"></i> حفظ</button><button id="printF36Form" class="btn-outline">طباعة</button></div>`;
-      const tbody = document.getElementById('f36RowsBody');
-      function addF36Row(){
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td><input value="نقطة ${tbody.children.length+1}"></td><td><input value="غرفة"></td><td><input type="number" value="22.0"></td><td><input value="45"></td><td><button class="btn-danger delete-row">🗑️</button></td>`;
-        tbody.appendChild(tr);
-        tr.querySelector('.delete-row').addEventListener('click',()=>tr.remove());
-      }
-      for(let i=0;i<2;i++) addF36Row();
-      document.getElementById('addF36Row').addEventListener('click', addF36Row);
-      document.getElementById('saveF36Record').addEventListener('click', ()=>{
-        const rows = document.querySelectorAll('#f36RowsBody tr'); let compliant = true;
-        rows.forEach(r=>{ const t=parseFloat(r.cells[2].querySelector('input').value), h=parseFloat(r.cells[3].querySelector('input').value); if(t<20||t>24||h<30||h>60) compliant=false; });
-        fms36Records.push({ date: document.getElementById('f36Date').value, location: name, pointCount: rows.length, status: compliant?'متوافق':'غير متوافق', signature: document.getElementById('f36Sign').value });
-        renderFms36Table();
-        if(!compliant) showNotification(name, 'حرارة/رطوبة خارج النطاق', '20-24°C, 30-60%');
-      });
-    }
+    <div style="text-align:center;margin-top:14px">
+      <button class="abtn abtn-primary" onclick="addR35('${loc.id}')">
+        <i class="fas fa-plus-circle"></i>
+        <span data-ar="إضافة السجل" data-en="Add Record">إضافة السجل</span>
+      </button>
+    </div>
+  </div>
+</div>`;
+  });
+}
 
-    // تبديل التبويبات
-    document.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click',function(){
-      document.querySelectorAll('.tab-btn').forEach(bt=>bt.classList.remove('tab-active','bg-[#1E3A8A]','text-white'));
-      this.classList.add('tab-active','bg-[#1E3A8A]','text-white');
-      document.querySelectorAll('.tab-content').forEach(c=>c.classList.add('hidden'));
-      document.getElementById('tab-'+this.dataset.tab).classList.remove('hidden');
-      if(this.dataset.tab==='fms35') buildFms35Form(document.getElementById('fms35LocationSelect').value);
-      if(this.dataset.tab==='fms36') buildFms36Form(document.getElementById('fms36LocationSelect').value);
-    }));
+/* ──────────────────────────────────────────────────────────────
+   BUILD FMS.36 FORMS
+────────────────────────────────────────────────────────────── */
+function buildForms36() {
+  const g = document.getElementById('grid36');
+  g.innerHTML = '';
+  LOCS36.forEach(loc => {
+    g.innerHTML += `
+<div class="lcard" id="lc36-${loc.id}">
+  <div class="lcard-head">
+    <div class="lcard-titles">
+      <div class="lcard-en">${loc.en}</div>
+      <div class="lcard-ar">${loc.ar}</div>
+    </div>
+    <div class="lcard-tags">
+      <span class="chip chip-ach"><i class="fas fa-thermometer-half"></i>&nbsp;20–24°C</span>
+      <span class="chip chip-pos"><i class="fas fa-tint"></i>&nbsp;30–60%</span>
+    </div>
+  </div>
+  <div class="lcard-body">
+    <div class="fg2">
+      <div class="ff">
+        <label class="fl"><i class="fas fa-calendar-day"></i><span data-ar="التاريخ" data-en="Date">التاريخ</span></label>
+        <input type="date" id="f36-${loc.id}-date" class="fi adate">
+      </div>
+      <div class="ff">
+        <label class="fl"><i class="fas fa-clock"></i><span data-ar="الوقت" data-en="Time">الوقت</span></label>
+        <input type="time" id="f36-${loc.id}-time" class="fi atime">
+      </div>
+      <div class="ff fgf">
+        <label class="fl"><i class="fas fa-user-cog"></i><span data-ar="اسم المسؤول" data-en="Inspector Name">اسم المسؤول</span></label>
+        <input type="text" id="f36-${loc.id}-resp" class="fi" placeholder="أدخل الاسم">
+      </div>
+    </div>
+    <div class="hline"></div>
+    <div class="fg2">
+      <div class="ff">
+        <label class="fl"><i class="fas fa-temperature-high" style="color:var(--crimson)"></i><span data-ar="درجة الحرارة (°C)" data-en="Temperature (°C)">الحرارة (°C)</span></label>
+        <input type="number" id="f36-${loc.id}-temp" class="fi" step="0.1" placeholder="20 – 24" oninput="chk36('${loc.id}')">
+        <div id="fs36-${loc.id}-temp" class="fistatus idle"><i class="fas fa-minus-circle"></i>&nbsp;20–24°C</div>
+      </div>
+      <div class="ff">
+        <label class="fl"><i class="fas fa-tint" style="color:var(--sky)"></i><span data-ar="الرطوبة النسبية (%)" data-en="Humidity (%)">الرطوبة (%)</span></label>
+        <input type="number" id="f36-${loc.id}-hum" class="fi" step="1" placeholder="30 – 60" oninput="chk36('${loc.id}')">
+        <div id="fs36-${loc.id}-hum" class="fistatus idle"><i class="fas fa-minus-circle"></i>&nbsp;30–60%</div>
+      </div>
+    </div>
+    <div class="comp-row idle" id="cr36-${loc.id}">
+      <div class="comp-status-txt idle" id="ct36-${loc.id}">
+        <i class="fas fa-hourglass-half"></i>
+        <span data-ar="في انتظار القراءات..." data-en="Awaiting readings...">في انتظار القراءات...</span>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:14px">
+      <button class="abtn abtn-primary" onclick="addR36('${loc.id}')">
+        <i class="fas fa-plus-circle"></i>
+        <span data-ar="إضافة السجل" data-en="Add Record">إضافة السجل</span>
+      </button>
+    </div>
+  </div>
+</div>`;
+  });
+}
 
-    document.getElementById('fms35LocationSelect').addEventListener('change', e=> buildFms35Form(e.target.value));
-    document.getElementById('fms36LocationSelect').addEventListener('change', e=> buildFms36Form(e.target.value));
-    // تهيئة
-    buildFms35Form('or');
-    renderFms35Table(); renderFms36Table(); updateKPIs();
+/* ──────────────────────────────────────────────────────────────
+   LIVE VALIDATION – FMS.35
+────────────────────────────────────────────────────────────── */
+function chk35(id) {
+  const loc = LOCS35.find(l => l.id === id);
+  const presVal = parseFloat(document.getElementById(`f35-${id}-pres`)?.value);
+  const achVal  = parseFloat(document.getElementById(`f35-${id}-ach`)?.value);
 
-    // الحاسبات
-    document.getElementById('calcAchBtn').addEventListener('click',()=>{ const q=parseFloat(document.getElementById('calcQ').value), v=parseFloat(document.getElementById('calcV').value); document.getElementById('achResult').innerText = (q/v).toFixed(2)+' ACH'; });
-    document.getElementById('calcCfmAch').addEventListener('click',()=>{ const cfm=parseFloat(document.getElementById('calcCfm').value), l=parseFloat(document.getElementById('calcLen').value), w=parseFloat(document.getElementById('calcWid').value), h=parseFloat(document.getElementById('calcHei').value); const vm3=l*w*h, vft=vm3*35.3147; document.getElementById('volM3').innerText=vm3.toFixed(2); document.getElementById('volFt').innerText=vft.toFixed(2); document.getElementById('cfmAchResult').innerText = ((cfm*60)/vft).toFixed(2)+' ACH'; });
-    document.getElementById('calcQfromV').addEventListener('click',()=>{ const a=parseFloat(document.getElementById('areaA').value), v=parseFloat(document.getElementById('velV').value); document.getElementById('qResult').innerText = (a*v*3600).toFixed(2)+' m³/h'; });
-    document.getElementById('calcDeltaP').addEventListener('click',()=>{ const v=parseFloat(document.getElementById('pressV').value); document.getElementById('deltaPResult').innerText = (0.5*1.2*v*v).toFixed(2)+' Pa'; });
-    document.getElementById('convertUnits').addEventListener('click',()=>{ const val=parseFloat(document.getElementById('unitInput').value); document.getElementById('unitResult').innerText = `${val} m² = ${(val*10.7639).toFixed(2)} ft² | ${val} m³ = ${(val*35.3147).toFixed(2)} ft³`; });
-    // تصدير CSV
-    document.getElementById('exportFms35Csv').addEventListener('click',()=>{ let csv="التاريخ,الموقع,عدد الغرف,الحالة,توقيع\n"+fms35Records.map(r=>`${r.date},${r.location},${r.roomCount},${r.status},${r.signature}`).join('\n'); downloadBlob(csv,'fms35.csv'); });
-    document.getElementById('exportFms36Csv').addEventListener('click',()=>{ let csv="تاريخ,موقع,عدد النقاط,حالة,توقيع\n"+fms36Records.map(r=>`${r.date},${r.location},${r.pointCount},${r.status},${r.signature}`).join('\n'); downloadBlob(csv,'fms36.csv'); });
-    function downloadBlob(content, name){ const b=new Blob(["\uFEFF"+content],{type:'text/csv'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=name; a.click(); }
-    document.getElementById('langToggle').addEventListener('click',()=> document.dir = document.dir=='rtl'?'ltr':'rtl');
-  })();
+  let presOK = null, achOK = null;
+
+  // ── Pressure
+  if (!isNaN(presVal)) {
+    if      (loc.flow === 'Positive') presOK = presVal >= 2.5  && presVal <= 6;
+    else if (loc.flow === 'Negative') presOK = presVal >= -16  && presVal <= -2.5;
+    else                              presOK = (presVal >= 2.5 && presVal <= 6) || (presVal >= -16 && presVal <= -2.5);
+    setFieldStatus(`f35-${id}-pres`, `fs35-${id}-pres`, presOK,
+      presOK ? `${presVal} Pa ✓` : `${presVal} Pa — خارج النطاق`);
+  } else { resetStatus(`f35-${id}-pres`, `fs35-${id}-pres`); }
+
+  // ── ACH
+  if (!isNaN(achVal)) {
+    achOK = achVal >= loc.minACH;
+    setFieldStatus(`f35-${id}-ach`, `fs35-${id}-ach`, achOK,
+      achOK ? `ACH ${achVal} ≥ ${loc.minACH} ✓` : `ACH ${achVal} < ${loc.minACH} ✗`);
+  } else { resetStatus(`f35-${id}-ach`, `fs35-${id}-ach`); }
+
+  // ── Overall
+  const cr = document.getElementById(`cr35-${id}`);
+  const ct = document.getElementById(`ct35-${id}`);
+  const rw = document.getElementById(`reason35-${id}`);
+
+  if (presOK === null && achOK === null) {
+    cr.className = 'comp-row idle';
+    ct.className = 'comp-status-txt idle';
+    ct.innerHTML = `<i class="fas fa-hourglass-half"></i><span>في انتظار القراءات...</span>`;
+    if (rw) rw.style.display = 'none';
+    return;
+  }
+  const compliant = (presOK === null || presOK) && (achOK === null || achOK);
+  cr.className = `comp-row ${compliant ? 'ok' : 'bad'}`;
+  ct.className = `comp-status-txt ${compliant ? 'ok' : 'bad'}`;
+  ct.innerHTML = compliant
+    ? `<i class="fas fa-check-circle"></i><span data-ar="✅ متوافق مع المعيار" data-en="✅ Compliant">✅ متوافق مع المعيار</span>`
+    : `<i class="fas fa-times-circle"></i><span data-ar="❌ غير متوافق — مطلوب إجراء" data-en="❌ Non-Compliant">❌ غير متوافق — مطلوب إجراء</span>`;
+  if (rw) rw.style.display = compliant ? 'none' : 'block';
+  if (isLTR) applyLangEl(cr);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   LIVE VALIDATION – FMS.36
+────────────────────────────────────────────────────────────── */
+function chk36(id) {
+  const tVal = parseFloat(document.getElementById(`f36-${id}-temp`)?.value);
+  const hVal = parseFloat(document.getElementById(`f36-${id}-hum`)?.value);
+
+  let tOK = null, hOK = null;
+  if (!isNaN(tVal)) {
+    tOK = tVal >= 20 && tVal <= 24;
+    setFieldStatus(`f36-${id}-temp`, `fs36-${id}-temp`, tOK,
+      tOK ? `${tVal}°C ✓` : `${tVal}°C — خارج 20–24°C`);
+  } else { resetStatus(`f36-${id}-temp`, `fs36-${id}-temp`); }
+
+  if (!isNaN(hVal)) {
+    hOK = hVal >= 30 && hVal <= 60;
+    setFieldStatus(`f36-${id}-hum`, `fs36-${id}-hum`, hOK,
+      hOK ? `${hVal}% ✓` : `${hVal}% — خارج 30–60%`);
+  } else { resetStatus(`f36-${id}-hum`, `fs36-${id}-hum`); }
+
+  const cr = document.getElementById(`cr36-${id}`);
+  const ct = document.getElementById(`ct36-${id}`);
+
+  if (tOK === null && hOK === null) {
+    cr.className = 'comp-row idle';
+    ct.className = 'comp-status-txt idle';
+    ct.innerHTML = `<i class="fas fa-hourglass-half"></i><span>في انتظار القراءات...</span>`;
+    return;
+  }
+  const ok = (tOK === null || tOK) && (hOK === null || hOK);
+  cr.className = `comp-row ${ok ? 'ok' : 'bad'}`;
+  ct.className = `comp-status-txt ${ok ? 'ok' : 'bad'}`;
+  ct.innerHTML = ok
+    ? `<i class="fas fa-check-circle"></i><span>✅ متوافق مع المعيار</span>`
+    : `<i class="fas fa-times-circle"></i><span>❌ غير متوافق — مطلوب إجراء</span>`;
+}
+
+/* helpers */
+function setFieldStatus(inpId, stId, isOk, msg) {
+  const inp = document.getElementById(inpId);
+  const st  = document.getElementById(stId);
+  if (!inp || !st) return;
+  inp.className = `fi ${isOk ? 'v-ok' : 'v-bad'}`;
+  st.className  = `fistatus ${isOk ? 'ok' : 'bad'}`;
+  st.innerHTML  = `<i class="fas fa-${isOk ? 'check' : 'times'}-circle"></i>&nbsp;${msg}`;
+}
+function resetStatus(inpId, stId) {
+  const inp = document.getElementById(inpId); if (inp) inp.className = 'fi';
+  const st  = document.getElementById(stId);  if (st)  st.className  = 'fistatus idle';
+}
+
+/* ──────────────────────────────────────────────────────────────
+   AUTO CALCULATIONS IN FORMS
+────────────────────────────────────────────────────────────── */
+function autoACH(id) {
+  const Q = parseFloat(document.getElementById(`f35-${id}-q`)?.value);
+  const L = parseFloat(document.getElementById(`f35-${id}-l`)?.value);
+  const W = parseFloat(document.getElementById(`f35-${id}-w`)?.value);
+  const H = parseFloat(document.getElementById(`f35-${id}-h`)?.value);
+  if ([Q,L,W,H].some(n => isNaN(n) || n <= 0)) { snack('⚠ أدخل Q ثم L, W, H', 'warn'); return; }
+  const V = L * W * H;
+  const ach = Q / V;
+  const el = document.getElementById(`f35-${id}-ach`);
+  if (el) { el.value = ach.toFixed(2); chk35(id); }
+  snack(`✓ ACH = ${ach.toFixed(2)}  (V = ${V.toFixed(2)} m³)`,'ok');
+}
+
+function autoQ(id) {
+  const A = parseFloat(document.getElementById(`f35-${id}-area`)?.value);
+  const v = parseFloat(document.getElementById(`f35-${id}-vel`)?.value);
+  if ([A,v].some(n => isNaN(n) || n <= 0)) { snack('⚠ أدخل v و A', 'warn'); return; }
+  const Q = A * v * 3600;
+  const el = document.getElementById(`f35-${id}-q`);
+  if (el) el.value = Q.toFixed(1);
+  snack(`✓ Q = ${Q.toFixed(1)} m³/h`, 'ok');
+}
+
+/* ──────────────────────────────────────────────────────────────
+   ADD RECORDS
+────────────────────────────────────────────────────────────── */
+function addR35(id) {
+  const loc  = LOCS35.find(l => l.id === id);
+  const date = document.getElementById(`f35-${id}-date`)?.value;
+  const time = document.getElementById(`f35-${id}-time`)?.value;
+  const resp = document.getElementById(`f35-${id}-resp`)?.value?.trim();
+  const pres = document.getElementById(`f35-${id}-pres`)?.value;
+  const ach  = document.getElementById(`f35-${id}-ach`)?.value;
+  const dir  = document.getElementById(`f35-${id}-dir`)?.value;
+  const rsn  = document.getElementById(`f35-${id}-reason`)?.value || '';
+
+  if (!date || !time || !resp) { snack('⚠ التاريخ والوقت والمسؤول مطلوبة', 'warn'); return; }
+  if (!pres && !ach) { snack('⚠ أدخل الضغط أو ACH على الأقل', 'warn'); return; }
+
+  const pv = parseFloat(pres), av = parseFloat(ach);
+  let presOK = true, achOK = true;
+  if (!isNaN(pv)) {
+    if      (loc.flow === 'Positive') presOK = pv >= 2.5  && pv <= 6;
+    else if (loc.flow === 'Negative') presOK = pv >= -16  && pv <= -2.5;
+    else                              presOK = (pv >= 2.5 && pv <= 6) || (pv >= -16 && pv <= -2.5);
+  }
+  if (!isNaN(av)) achOK = av >= loc.minACH;
+
+  const compliant = (isNaN(pv) || presOK) && (isNaN(av) || achOK);
+
+  R35.push({
+    id: Date.now(),
+    date, time, locId: id, locEn: loc.en, locAr: loc.ar, resp,
+    pressure: isNaN(pv) ? '—' : pv,
+    ach: isNaN(av) ? '—' : av,
+    dir, compliant, reason: rsn
+  });
+
+  saveStorage();
+  renderTable35();
+  refreshKPIs();
+  if (!compliant) showAlert(loc.en, `Pressure: ${pres||'—'} Pa  |  ACH: ${ach||'—'}`);
+  else snack('✓ تم إضافة السجل بنجاح', 'ok');
+}
+
+function addR36(id) {
+  const loc  = LOCS36.find(l => l.id === id);
+  const date = document.getElementById(`f36-${id}-date`)?.value;
+  const time = document.getElementById(`f36-${id}-time`)?.value;
+  const resp = document.getElementById(`f36-${id}-resp`)?.value?.trim();
+  const temp = document.getElementById(`f36-${id}-temp`)?.value;
+  const hum  = document.getElementById(`f36-${id}-hum`)?.value;
+
+  if (!date || !time || !resp) { snack('⚠ التاريخ والوقت والمسؤول مطلوبة', 'warn'); return; }
+  if (!temp && !hum) { snack('⚠ أدخل الحرارة أو الرطوبة', 'warn'); return; }
+
+  const tv = parseFloat(temp), hv = parseFloat(hum);
+  const tOK = isNaN(tv) || (tv >= 20 && tv <= 24);
+  const hOK = isNaN(hv) || (hv >= 30 && hv <= 60);
+  const compliant = tOK && hOK;
+
+  R36.push({
+    id: Date.now(), date, time, locId: id, locEn: loc.en, locAr: loc.ar, resp,
+    temp: isNaN(tv) ? '—' : tv, humidity: isNaN(hv) ? '—' : hv, compliant
+  });
+
+  saveStorage();
+  renderTable36();
+  refreshKPIs();
+  if (!compliant) showAlert(loc.en, `Temp: ${temp||'—'}°C  |  Humidity: ${hum||'—'}%`);
+  else snack('✓ تم إضافة السجل بنجاح', 'ok');
+}
+
+/* ──────────────────────────────────────────────────────────────
+   RENDER TABLES
+────────────────────────────────────────────────────────────── */
+function renderTable35() {
+  const tb = document.getElementById('tbody35');
+  document.getElementById('tc35').textContent = R35.length;
+  if (!R35.length) {
+    tb.innerHTML = `<tr><td colspan="11" class="td-empty"><i class="fas fa-inbox"></i><span data-ar="لا توجد سجلات بعد" data-en="No records yet">لا توجد سجلات بعد</span></td></tr>`;
+    return;
+  }
+  tb.innerHTML = R35.map((r,i) => `
+    <tr>
+      <td style="color:var(--text-4);font-family:var(--f-mono)">${i+1}</td>
+      <td style="font-family:var(--f-mono)">${r.date}</td>
+      <td style="font-family:var(--f-mono)">${r.time}</td>
+      <td><span class="td-loc-en">${r.locEn}</span><span class="td-loc-ar">${r.locAr}</span></td>
+      <td>${r.resp}</td>
+      <td class="td-num">${r.pressure} Pa</td>
+      <td class="td-num">${r.ach}</td>
+      <td style="font-size:10px;color:var(--text-3)">${r.dir||'—'}</td>
+      <td class="${r.compliant ? 'td-ok' : 'td-bad'}">${r.compliant ? '✅ متوافق' : '❌ مخالفة'}</td>
+      <td style="font-size:10px;color:var(--text-3);max-width:120px">${r.reason||'—'}</td>
+      <td><button class="abtn abtn-danger abtn-sm" onclick="del35(${r.id})"><i class="fas fa-trash-alt"></i></button></td>
+    </tr>`).join('');
+  if (isLTR) applyLangEl(tb);
+}
+
+function renderTable36() {
+  const tb = document.getElementById('tbody36');
+  document.getElementById('tc36').textContent = R36.length;
+  if (!R36.length) {
+    tb.innerHTML = `<tr><td colspan="9" class="td-empty"><i class="fas fa-inbox"></i><span data-ar="لا توجد سجلات بعد" data-en="No records yet">لا توجد سجلات بعد</span></td></tr>`;
+    return;
+  }
+  tb.innerHTML = R36.map((r,i) => `
+    <tr>
+      <td style="color:var(--text-4);font-family:var(--f-mono)">${i+1}</td>
+      <td style="font-family:var(--f-mono)">${r.date}</td>
+      <td style="font-family:var(--f-mono)">${r.time}</td>
+      <td><span class="td-loc-en">${r.locEn}</span><span class="td-loc-ar">${r.locAr}</span></td>
+      <td>${r.resp}</td>
+      <td class="td-num">${r.temp}°C</td>
+      <td class="td-num">${r.humidity}%</td>
+      <td class="${r.compliant ? 'td-ok' : 'td-bad'}">${r.compliant ? '✅ متوافق' : '❌ مخالفة'}</td>
+      <td><button class="abtn abtn-danger abtn-sm" onclick="del36(${r.id})"><i class="fas fa-trash-alt"></i></button></td>
+    </tr>`).join('');
+  if (isLTR) applyLangEl(tb);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   DELETE & CLEAR
+────────────────────────────────────────────────────────────── */
+function del35(id) { if (!confirm('حذف هذا السجل؟')) return; R35 = R35.filter(r => r.id !== id); saveStorage(); renderTable35(); refreshKPIs(); }
+function del36(id) { if (!confirm('حذف هذا السجل؟')) return; R36 = R36.filter(r => r.id !== id); saveStorage(); renderTable36(); refreshKPIs(); }
+
+function clearAll(tab) {
+  if (!confirm('مسح جميع السجلات؟ لا يمكن التراجع.')) return;
+  if (tab === 'fms35') { R35 = []; renderTable35(); } else { R36 = []; renderTable36(); }
+  saveStorage(); refreshKPIs(); snack('🗑 تم مسح السجلات', 'warn');
+}
+
+/* ──────────────────────────────────────────────────────────────
+   KPIs
+────────────────────────────────────────────────────────────── */
+function refreshKPIs() {
+  const upd = (tot,ok,bad,rate,pb) => {
+    document.getElementById(tot).textContent = arguments[5];
+    document.getElementById(ok).textContent  = arguments[6];
+    document.getElementById(bad).textContent = arguments[7];
+    const r = arguments[5] > 0 ? Math.round(arguments[6]/arguments[5]*100) : null;
+    document.getElementById(rate).textContent = r !== null ? r+'%' : '—';
+    document.getElementById(pb).style.width   = (r || 0) + '%';
+  };
+  const t35 = R35.length, c35 = R35.filter(r=>r.compliant).length;
+  const t36 = R36.length, c36 = R36.filter(r=>r.compliant).length;
+  document.getElementById('k35-tot').textContent  = t35;
+  document.getElementById('k35-ok').textContent   = c35;
+  document.getElementById('k35-bad').textContent  = t35 - c35;
+  const r35 = t35 > 0 ? Math.round(c35/t35*100) : null;
+  document.getElementById('k35-rate').textContent = r35 !== null ? r35+'%' : '—';
+  document.getElementById('pb35').style.width     = (r35||0)+'%';
+
+  document.getElementById('k36-tot').textContent  = t36;
+  document.getElementById('k36-ok').textContent   = c36;
+  document.getElementById('k36-bad').textContent  = t36 - c36;
+  const r36 = t36 > 0 ? Math.round(c36/t36*100) : null;
+  document.getElementById('k36-rate').textContent = r36 !== null ? r36+'%' : '—';
+  document.getElementById('pb36').style.width     = (r36||0)+'%';
+
+  // Global
+  const totAll = t35 + t36, compAll = c35 + c36;
+  const rAll = totAll > 0 ? Math.round(compAll/totAll*100) : null;
+  document.getElementById('globalComp').textContent = rAll !== null ? rAll+'%' : '—';
+}
+
+/* ──────────────────────────────────────────────────────────────
+   STORAGE
+────────────────────────────────────────────────────────────── */
+function saveStorage() {
+  try { localStorage.setItem('cbahi35', JSON.stringify(R35)); localStorage.setItem('cbahi36', JSON.stringify(R36)); } catch(e){}
+}
+function loadStorage() {
+  try {
+    const d35 = localStorage.getItem('cbahi35'); if (d35) R35 = JSON.parse(d35);
+    const d36 = localStorage.getItem('cbahi36'); if (d36) R36 = JSON.parse(d36);
+  } catch(e){}
+}
+
+/* ──────────────────────────────────────────────────────────────
+   EXPORT CSV
+────────────────────────────────────────────────────────────── */
+function exportCSV(tab) {
+  let rows, filename;
+  if (tab === 'fms35') {
+    if (!R35.length) { snack('⚠ لا توجد بيانات', 'warn'); return; }
+    rows = [['#','Date','Time','Location EN','Location AR','Inspector','Pressure (Pa)','ACH','Direction','Status','Reason'],
+            ...R35.map((r,i) => [i+1,r.date,r.time,r.locEn,r.locAr,r.resp,r.pressure,r.ach,r.dir||'',r.compliant?'Compliant':'Non-Compliant',r.reason||''])];
+    filename = 'FMS35_Log.csv';
+  } else {
+    if (!R36.length) { snack('⚠ لا توجد بيانات', 'warn'); return; }
+    rows = [['#','Date','Time','Location EN','Location AR','Inspector','Temp (°C)','Humidity (%)','Status'],
+            ...R36.map((r,i) => [i+1,r.date,r.time,r.locEn,r.locAr,r.resp,r.temp,r.humidity,r.compliant?'Compliant':'Non-Compliant'])];
+    filename = 'FMS36_Log.csv';
+  }
+  const csv = '\uFEFF' + rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+  a.download = filename; a.click();
+  snack(`✓ ${filename} تم التصدير`, 'ok');
+}
+function exportAll() { exportCSV('fms35'); setTimeout(() => exportCSV('fms36'), 400); }
+
+/* ──────────────────────────────────────────────────────────────
+   ALERT & SNACK
+────────────────────────────────────────────────────────────── */
+function showAlert(locName, params) {
+  document.getElementById('alertLoc').innerHTML = `<i class="fas fa-map-marker-alt" style="color:var(--crimson)"></i>&nbsp;${locName}`;
+  document.getElementById('alertParam').textContent = params;
+  document.getElementById('alert-overlay').classList.add('show');
+}
+function closeAlert(e) {
+  if (!e || e.target === document.getElementById('alert-overlay') || e.currentTarget === document.querySelector('.alert-close-btn') || !e.target)
+    document.getElementById('alert-overlay').classList.remove('show');
+}
+
+let snackT;
+function snack(msg, type = 'ok') {
+  const el = document.getElementById('snack');
+  el.textContent = msg;
+  el.className = `show ${type}`;
+  clearTimeout(snackT);
+  snackT = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   TABS
+────────────────────────────────────────────────────────────── */
+function goTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab-trigger').forEach(b => b.classList.remove('on'));
+  document.getElementById(`tab-${id}`).classList.add('on');
+  btn.classList.add('on');
+}
+
+/* ──────────────────────────────────────────────────────────────
+   LANGUAGE TOGGLE
+────────────────────────────────────────────────────────────── */
+function toggleLang() {
+  isLTR = !isLTR;
+  document.body.classList.toggle('ltr', isLTR);
+  document.documentElement.setAttribute('dir', isLTR ? 'ltr' : 'rtl');
+  document.documentElement.setAttribute('lang', isLTR ? 'en' : 'ar');
+  document.getElementById('langLabel').textContent = isLTR ? 'AR' : 'EN';
+  applyLangEl(document.body);
+  updateTodayLabel();
+}
+
+function applyLangEl(root) {
+  const attr = isLTR ? 'en' : 'ar';
+  root.querySelectorAll(`[data-${attr}]`).forEach(el => {
+    el.textContent = el.getAttribute(`data-${attr}`);
+  });
+}
+
+/* ──────────────────────────────────────────────────────────────
+   ENGINEER CALCULATOR
+────────────────────────────────────────────────────────────── */
+function swCalc(id, btn) {
+  document.querySelectorAll('.cpanel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.ctab').forEach(b => b.classList.remove('on'));
+  document.getElementById(`cp-${id}`).classList.add('on');
+  btn.classList.add('on');
+}
+
+function doACH() {
+  const Q = parseFloat(document.getElementById('c-q').value);
+  const V = parseFloat(document.getElementById('c-v').value);
+  if (!isNaN(Q) && !isNaN(V) && V > 0) {
+    const r = Q / V;
+    document.getElementById('r-ach').textContent = r.toFixed(2);
+    document.getElementById('d-ach').textContent = `Q = ${Q} m³/h  ÷  V = ${V} m³`;
+  } else { document.getElementById('r-ach').textContent = '—'; document.getElementById('d-ach').textContent = ''; }
+}
+function doQ() {
+  const A = parseFloat(document.getElementById('c-a').value);
+  const v = parseFloat(document.getElementById('c-vv').value);
+  if (!isNaN(A) && !isNaN(v) && A > 0 && v > 0) {
+    const r = A * v * 3600;
+    document.getElementById('r-q').textContent = r.toFixed(1);
+    document.getElementById('d-q').textContent = `A = ${A} m²  ×  v = ${v} m/s  × 3600`;
+  } else { document.getElementById('r-q').textContent = '—'; document.getElementById('d-q').textContent = ''; }
+}
+function doDP() {
+  const v = parseFloat(document.getElementById('c-vp').value);
+  if (!isNaN(v) && v >= 0) {
+    const r = 0.5 * 1.2 * v * v;
+    document.getElementById('r-dp').textContent = r.toFixed(3);
+    document.getElementById('d-dp').textContent = `0.5 × 1.2 × ${v}² = ${r.toFixed(3)} Pa`;
+  } else { document.getElementById('r-dp').textContent = '—'; document.getElementById('d-dp').textContent = ''; }
+}
+function doVol() {
+  const L = parseFloat(document.getElementById('c-l').value);
+  const W = parseFloat(document.getElementById('c-w').value);
+  const H = parseFloat(document.getElementById('c-h').value);
+  if (!isNaN(L) && !isNaN(W) && !isNaN(H) && L > 0 && W > 0 && H > 0) {
+    const r = L * W * H;
+    document.getElementById('r-vol').textContent = r.toFixed(2);
+    document.getElementById('d-vol').textContent = `${L} × ${W} × ${H} = ${r.toFixed(2)} m³`;
+  } else { document.getElementById('r-vol').textContent = '—'; document.getElementById('d-vol').textContent = ''; }
+}
 </script>
 </body>
 </html>
